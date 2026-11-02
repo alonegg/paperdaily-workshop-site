@@ -59,7 +59,7 @@ development of collaborative font projects, to support the font creation
 distributed by the Copyright Holder(s).
 distributed under any other license. The requirement for fonts to
 efforts of academic and linguistic communities, and to provide a free and
-fonts, including any derivative works, can be bundled, embedded, 
+fonts, including any derivative works, can be bundled, embedded,
 however, cannot be released under any other type of license. The
 in Original or Modified Versions, may be sold by itself.
 in the appropriate machine-readable metadata fields within text or

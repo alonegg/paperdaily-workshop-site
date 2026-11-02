@@ -25,7 +25,8 @@ def export(source,target):
         if p.suffix.lower() not in {'.html','.json','.md','.jpg','.jpeg','.png','.svg','.woff2','.txt','.zip'}:raise ValueError('Unsupported asset')
         name=str(p.relative_to(source));data=p.read_bytes()
         if p.suffix in {'.html','.json','.md','.svg','.txt'}:
-            text=data.decode('utf-8')
+            text=data.decode('utf-8').replace('\r\n','\n').replace('\r','\n')
+            if p.suffix=='.txt':text='\n'.join(line.rstrip() for line in text.splitlines())+'\n'
             if name=='workshop/index.html':text=re.sub(r'<aside\b[^>]*class="notes"[^>]*>.*?</aside>','',text,flags=re.S)
             text=re.sub(r'/Users/alone/[^\s<>）)]+','[制作路径]',text);check_text(text);data=text.encode()
         selected[name]=data
