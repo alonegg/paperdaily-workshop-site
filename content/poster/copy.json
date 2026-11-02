@@ -10,5 +10,14 @@
   "footer_secondary": "Ask 澄清问题，RiD 承接原文深读",
   "website": "ask.paperdaily.org　·　paperdaily.org　·　read.paperdaily.org",
   "event_date": "11月5日 上午",
-  "speaker": "主讲人：陈春林"
+  "speaker": "主讲人：陈春林",
+  "preparation_title": "会前准备",
+  "preparation_account": "01  学校邮箱注册并验证",
+  "preparation_credit": "有效机构资格：每日 300 积分，以账号显示为准",
+  "preparation_skills": "02  在 WorkBuddy 安装并启用两个 skills",
+  "preparation_link_label": "准备指引与 skills 下载",
+  "preparation_url": "https://workshop.paperdaily.org/prepare/",
+  "preparation_short_url": "workshop.paperdaily.org/prepare/",
+  "preparation_qr_label": "扫码完成会前准备",
+  "editable_package_url": "https://workshop.paperdaily.org/poster/assets/PaperDaily-workshop-poster-html.zip"
 }

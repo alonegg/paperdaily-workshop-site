@@ -1,11 +1,13 @@
 {
-  "source_sha": "de138e6bb62bb1b7740ecd585429c3f058025e62",
+  "source_sha": "8311d6b69ca269a771b9ee6aaccf3dc6d66882bd",
   "source_repository": "alonegg/paperdaily-research-workshop",
   "files": {
+    "poster/assets/PaperDaily-workshop-poster-html.zip": "a35bc273301c8d31e34fad02382ae68f5468bb61babe9ef055ee56040dfb399b",
     "poster/assets/paperdaily-mark.svg": "ea2f51102cbe5f004172455700be69df4403acbdfe80f3c15c96b82813a5725e",
+    "poster/assets/prepare-qr.svg": "7587a126a1dc1547d946f1b1057e08f8dc027a3f41fd895f0086f3e7a4107419",
     "poster/assets/research-memory-art.png": "c3d7e5c98028e33bec921440fcdad28e5a7bf6b0b0772ea2fa5f24582bb57441",
-    "poster/copy.json": "36dc7400e733ddb5ec30da81447c3cdaa3723ce0fd198130f6028efe166ceb1b",
-    "poster/index.html": "a48a768966d4d296a7d7269c743828127cac675fe7e01377bbfb16a99322a7eb",
+    "poster/copy.json": "bd629cfed2ea587c3757ff483d1cbb0ce4c1609c0d355d67f8634033e94c2f06",
+    "poster/index.html": "649eeaebd44465e87af0cb02d1eef84b1884ec65e5122dae19b84c12d0333324",
     "workshop/Skills研究入门与IS思想.md": "f17d37d7cfef20a7369153a94532bdc27477c0483a86edaefd91fa8b15db5f75",
     "workshop/WorkBuddy安装说明.md": "dafc52daeb1d13fb31556a63b59c8e465c6c5fe91749700d4576689002286cf3",
     "workshop/assets/01-daily-overview.jpg": "2a76d9fcdeda1ce77a454d46216ecc5bf6913fb9081c16eb9f79d27afde4c695",
