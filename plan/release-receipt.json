@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-02",
+  "domain": "https://workshop.paperdaily.org",
+  "repo": "https://github.com/alonegg/paperdaily-workshop-site",
+  "public_repo": true,
+  "domain_binding": {
+    "hostname": "workshop.paperdaily.org",
+    "service": "paperdaily-workshop",
+    "zone_id": "5e9359f0e6b8577783e22a877126173d"
+  },
+  "source_sha": "de138e6bb62bb1b7740ecd585429c3f058025e62",
+  "accepted_site_sha": "dd85cba095ad30747394d7421dabd3f4e8bebc5f",
+  "source_sync_run": "https://github.com/alonegg/paperdaily-research-workshop/actions/runs/41374946735",
+  "site_deploy_run": "https://github.com/alonegg/paperdaily-workshop-site/actions/runs/41374964850",
+  "checks": {
+    "source_push_to_target_commit": "passed",
+    "target_push_to_cloudflare": "passed",
+    "canonical_https_and_release_identity": "passed",
+    "both_complete_zip_sha256": "passed",
+    "local_link_integrity": "passed",
+    "export_safety_tests": 3,
+    "npm_audit": "0 vulnerabilities",
+    "browser_home_and_prepare": "passed",
+    "copy_self_check_button": "已复制"
+  },
+  "preserved_red_evidence": [
+    "Initial default Python urllib user-agent returned403; named release-check user-agent returned200 and CI verification passed.",
+    "A local remote-version check used stale pre-sync checkout83a383f while site had correctly advanced; check failed as designed, then fast-forward and rebuild/verify passed.",
+    "Original font-license text CRLF/trailing whitespace triggered diff check; normalize only exported text, retain original ZIP bytes."
+  ],
+  "limitations": [
+    "No fresh-account registration/email verification performed.",
+    "No full WorkBuddy installation on participant computers or Windows client test.",
+    "Public lecture excludes internal presenter notes; source originals unchanged."
+  ],
+  "update_contract": {
+    "lecture": "source workshop/index.html and referenced assets",
+    "poster": "source poster/index.html and referenced assets; render copy/template edits before push",
+    "skills": "source workshop/handouts ZIPs and matching manifest.json",
+    "site_code": "this repository main",
+    "trigger": "commit and push main; no local-directory polling"
+  },
+  "browser_screenshot": "plan/screenshots/home-mobile.png",
+  "browser_note": "Homepage and preparation were visibly checked, copy button returned 已复制. Final combined browser action timed out after screenshot file appeared; no further site mutation depended on it."
+}
