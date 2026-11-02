@@ -1,0 +1,1 @@
+{"$schema":"node_modules/wrangler/config-schema.json","name":"paperdaily-workshop","account_id":"8937d4abe2c393f4227393a216b3c647","compatibility_date":"2026-11-02","workers_dev":false,"preview_urls":false,"assets":{"directory":"./dist","html_handling":"auto-trailing-slash","not_found_handling":"none"},"routes":[{"pattern":"workshop.paperdaily.org","custom_domain":true}]}

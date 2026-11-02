@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="PaperDaily">
+  <!-- 线索页：纸页上的文字线穿出右侧，暖铜色端点代表新的研究线索。 -->
+  <path d="M51 38V17c0-6-4-10-10-10H15c-3 0-5 2-5 5v40c0 3 2 5 5 5h36v-8" fill="#f6f5ef" stroke="#142e2b" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M20 23h15M20 35h12c8 0 8 9 18 9h6" fill="none" stroke="#142e2b" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="57" cy="44" r="4.2" fill="#b36542"/>
+</svg>

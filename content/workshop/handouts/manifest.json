@@ -1,0 +1,21 @@
+{
+  "source": "https://github.com/alonegg/paperdaily-skills",
+  "source_commit": "036ba21d15662a1f487fc1726a0fad22f1e734fe",
+  "packages": [
+    {
+      "file": "paperdaily.zip",
+      "skill": "paperdaily",
+      "version": "0.4.2",
+      "source_files": 14,
+      "sha256": "41befc18aa6ce4fc926cfc9149a89bdf160f27dcb55aa6d3b8c869c3782f69c8"
+    },
+    {
+      "file": "paperdaily-deep-research.zip",
+      "skill": "paperdaily-deep-research",
+      "version": "0.8.1",
+      "source_files": 29,
+      "sha256": "f10a5d8fbf924b757223e2f2de5e3aa1bed5eafb10a51d1dee5095b103d8a48c"
+    }
+  ],
+  "verification": "All 61 release manifest hashes checked; packaged files verified after ZIP extraction; LICENSE included. GUI import entry observed; no reinstallation performed."
+}

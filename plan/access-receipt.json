@@ -1,0 +1,14 @@
+{
+  "cf_token_id": "4721ca670f9ba8808c4c346e33b57ba4",
+  "cf_token_name": "paperdaily-workshop-github-deploy",
+  "cf_permissions": [
+    "Workers Scripts Write for selected account",
+    "Workers Routes Write and Zone Read for paperdaily.org"
+  ],
+  "target_deploy_key_id": 168418161,
+  "target_deploy_key_write": true,
+  "source_secret": "WORKSHOP_SITE_DEPLOY_KEY",
+  "target_secret": "CLOUDFLARE_API_TOKEN",
+  "private_key_deleted_after_configuration": true,
+  "dns_preexisting": false
+}

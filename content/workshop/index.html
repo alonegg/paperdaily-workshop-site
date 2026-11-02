@@ -1,0 +1,1299 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>如何把PaperDaily作为你的科研外脑 · 知新 PaperDaily</title>
+<style>
+@font-face{font-family:"SiyinSong";src:url("assets/fonts/SiyinSong-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --paper:#f6f5ef; --paper2:#efede3; --card:#fffdf8;
+  --ink:#142e2b; --ink2:#23463f; --copper:#b36542; --copper-l:#d9a487; --sage:#c4cfcb;
+  --text:#202124; --muted:#5d645f; --line:#dcd9cc;
+  --serif:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",Georgia,serif;
+  --display:"SiyinSong",var(--serif);
+  --sans:"PingFang SC","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:Menlo,"SF Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#0e1918;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+#deck{position:fixed;inset:0;overflow:hidden}
+.slide{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(var(--s,1));
+  display:none;background:var(--paper);color:var(--text);overflow:hidden;padding:168px 128px 120px}
+.slide.active{display:block}
+.notes{display:none}
+
+/* ---------- 页眉：阶段导航 ---------- */
+.chrome{position:absolute;left:128px;right:128px;top:52px;height:56px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--line);font-size:21px;color:var(--muted)}
+.brand{display:flex;align-items:center;gap:14px;font-family:var(--serif);color:var(--ink);font-size:24px}
+.brand b{font-weight:600}.brand small{font-family:var(--sans);font-size:19px;color:var(--muted)}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--ink);display:grid;place-items:center;color:var(--copper-l);font-size:17px;font-family:var(--serif)}
+.track{display:flex;gap:30px;height:100%}
+.track span{display:flex;align-items:center;gap:8px;height:100%;border-bottom:3px solid transparent;margin-bottom:-1px;color:#9aa09a}
+.track span em{font-style:normal;font-family:var(--mono);font-size:16px}
+.track span.done{color:var(--ink2)}
+.track span.now{color:var(--copper);border-color:var(--copper);font-weight:600}
+.foot{position:absolute;left:128px;right:128px;bottom:44px;display:flex;justify-content:space-between;font-size:19px;color:#8b918b}
+.foot .pg{font-family:var(--mono)}
+.dark .foot{color:#7f9893}
+
+/* ---------- 文字 ---------- */
+h1,h2,h3{font-family:var(--serif);color:var(--ink);font-weight:600;margin:0}
+.cover h1,.divider h2,.divider .num,.task .band h2,.title,.big-q{font-family:var(--display);font-weight:400}
+.title{font-size:66px;line-height:1.22;letter-spacing:.01em;margin-bottom:22px}
+.kicker{font-size:23px;letter-spacing:.24em;color:var(--copper);font-weight:600;margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.kicker .case{letter-spacing:.08em;border:1.5px solid var(--copper);border-radius:999px;padding:3px 16px;font-size:20px}
+.lead{font-size:31px;line-height:1.65;color:var(--muted);margin:0}
+p,li{font-size:28px;line-height:1.6}
+.muted{color:var(--muted)}
+.copper{color:var(--copper)}
+.mono{font-family:var(--mono)}
+b,strong{color:var(--ink);font-weight:600}
+.slide a{color:var(--copper);text-underline-offset:4px}
+
+/* ---------- 版式 ---------- */
+.row{display:flex;gap:56px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 36px}
+.card h3{font-size:34px;margin-bottom:12px}
+.card p{margin:0;font-size:25px;color:var(--muted)}
+.g5 .card{padding:30px 28px}.g5 .card h3{font-size:30px}.g5 .card p{font-size:23px}
+.tag{display:inline-block;font-size:19px;letter-spacing:.06em;padding:4px 14px;border-radius:999px;background:var(--paper2);color:var(--ink2);font-weight:600}
+.tag.c{background:#f3e3d8;color:var(--copper)}
+.rule{height:1px;background:var(--line);margin:34px 0}
+
+.evidence-value{padding-top:150px}
+.evidence-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:18px}
+.evidence-grid .card{padding:14px 18px;min-height:110px}
+.evidence-grid strong{display:block;font-family:var(--serif);font-size:44px;line-height:1.1;color:var(--copper);white-space:nowrap}
+.evidence-grid strong small{font-family:var(--sans);font-size:19px;margin-left:7px;font-weight:400}
+.evidence-grid h3{font-size:21px;line-height:1.25;margin:8px 0 0}.evidence-grid p{font-size:20px;line-height:1.4}
+.source-fields{margin-top:14px;table-layout:fixed}
+.source-fields th{font-size:19px;line-height:1.25;padding:6px 10px}
+.source-fields td{font-size:21px;line-height:1.25;padding:5px 10px;overflow-wrap:normal}
+.source-fields td:first-child{font-size:21px}
+.source-channels{display:grid;grid-template-columns:250px 1fr;gap:6px 14px;background:var(--paper2);border-radius:12px;padding:12px 18px;margin-top:14px;font-size:23px;line-height:1.35}
+.evidence-source{font-size:18px;line-height:1.35;margin:12px 0 0;color:var(--muted)}
+
+/* ---------- 深色页 ---------- */
+.dark{background:var(--ink);color:#e9efe9}
+.dark h1,.dark h2,.dark b{color:#f6f5ef}
+.dark .lead{color:#b8c8c3}
+.cover{padding:0}
+.cover .inner{position:absolute;left:150px;top:190px;right:150px}
+.cover h1{font-size:104px;line-height:1.2;letter-spacing:.02em}
+.cover h1 span{color:var(--copper-l)}
+.cover .sub{margin-top:46px;font-size:34px;color:#b8c8c3;line-height:1.6}
+.cover .sub .brandline{display:inline-flex;align-items:center;gap:16px;font-family:var(--serif);font-size:36px;color:#f6f5ef;letter-spacing:.02em}
+.cover .sub .brandline img{width:48px;height:48px;padding:3px;background:#f6f5ef;border-radius:10px;display:block}
+.cover .sub .def{display:block;margin-top:6px}
+.cover .sub .def b{font-family:var(--serif);color:var(--copper-l);letter-spacing:.08em}
+.cover .meta{position:absolute;left:150px;bottom:110px;display:flex;gap:56px;font-size:24px;color:#93aaa4}
+.cover .meta b{display:block;font-size:30px;color:#f6f5ef;margin-top:6px;font-family:var(--serif)}
+.cover .orbit{position:absolute;right:-180px;top:-140px;width:900px;height:900px;border-radius:50%;border:1.5px solid rgba(217,164,135,.28)}
+.cover .orbit::after{content:"";position:absolute;inset:130px;border-radius:50%;border:1.5px dashed rgba(196,207,203,.18)}
+.divider{padding:0}
+.divider .num{position:absolute;left:120px;top:110px;font-family:var(--serif);font-size:420px;line-height:1;color:var(--copper-l);opacity:.92}
+.divider .txt{position:absolute;left:150px;bottom:190px;right:760px}
+.divider .txt .kicker{color:var(--copper-l)}
+.divider h2{font-size:92px;line-height:1.18}
+.divider .txt .lead{margin-top:28px;font-size:34px}
+.divider .side{position:absolute;right:130px;bottom:190px;width:560px;border-left:2px solid rgba(217,164,135,.5);padding-left:44px}
+.divider .side .lbl{font-size:21px;letter-spacing:.22em;color:var(--copper-l);margin-bottom:18px}
+.divider .side p{font-size:28px;color:#dfe8e4;margin:0 0 12px}
+.divider .side .tool{margin-top:26px;font-family:var(--mono);font-size:23px;color:#93aaa4}
+
+/* ---------- 截图演示 ---------- */
+.demo{display:grid;grid-template-columns:1.62fr 1fr;gap:64px;align-items:start}
+.shot{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 34px 70px -28px rgba(20,46,43,.45),0 0 0 1px rgba(20,46,43,.14)}
+.shot .bar{height:46px;background:#e8e6dc;display:flex;align-items:center;gap:9px;padding:0 18px}
+.shot .bar i{width:13px;height:13px;border-radius:50%;background:#cfccc0}
+.shot .bar span{margin-left:14px;flex:1;background:#f7f6f0;border-radius:8px;padding:5px 16px;font-size:18px;color:#6b706a;font-family:var(--mono)}
+.shot img{display:block;width:100%;object-fit:cover;object-position:top left}
+.shot.darkui{background:#202124}
+.cap{margin-top:16px;font-size:19px;color:#8b918b}
+.slide>.cap{position:absolute;left:128px;bottom:44px;margin:0}
+.slide:has(>.cap) .foot span:first-child{visibility:hidden}
+.callouts{list-style:none;margin:8px 0 0;padding:0;counter-reset:c}
+.callouts li{counter-increment:c;position:relative;padding-left:66px;margin-bottom:30px;font-size:27px;line-height:1.5;color:var(--muted)}
+.callouts li b{display:block;font-size:30px;margin-bottom:4px}
+.callouts li::before{content:counter(c);position:absolute;left:0;top:2px;width:44px;height:44px;border-radius:50%;background:var(--copper);color:#fff;
+  font-family:var(--mono);font-size:22px;display:grid;place-items:center}
+
+/* ---------- 动手页 ---------- */
+.task{padding:0;background:var(--paper)}
+.task .band{position:absolute;left:0;top:0;bottom:0;width:560px;background:var(--copper);color:#fff;padding:150px 64px 110px}
+.task .band .lbl{font-size:24px;letter-spacing:.3em;opacity:.85}
+.task .band h2{color:#fff;font-size:60px;line-height:1.22;margin-top:20px}
+.task .band .hint{margin-top:18px;font-size:22px;opacity:.85;line-height:1.6}
+.task .band .where{position:absolute;left:64px;right:64px;bottom:110px;font-family:var(--mono);font-size:24px;background:rgba(0,0,0,.14);border-radius:12px;padding:16px 20px}
+.task .body{position:absolute;left:640px;right:120px;top:168px;bottom:120px}
+.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:0 0 0 76px;margin-bottom:28px;font-size:30px;line-height:1.5}
+.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;font-family:var(--mono);font-size:24px;color:var(--copper);font-weight:600}
+.steps li small{display:block;font-size:23px;color:var(--muted);margin-top:4px}
+.done-box{position:absolute;left:0;right:0;bottom:0;background:var(--card);border:1.5px solid var(--ink);border-radius:18px;padding:26px 34px 26px 100px}
+.done-box::before{content:"✓";position:absolute;left:32px;top:24px;width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:26px}
+.done-box .lbl{font-size:20px;letter-spacing:.2em;color:var(--copper);font-weight:600}
+.done-box p{margin:4px 0 0;font-size:28px}
+.task .chrome{left:640px}
+.agent-strip{position:absolute;left:0;right:0;bottom:150px;display:flex;align-items:baseline;gap:20px;font-size:23px;line-height:1.5;color:var(--ink2);border-top:1px dashed var(--copper-l);padding-top:16px}
+.agent-strip span{flex:none;font-size:19px;letter-spacing:.14em;font-weight:600;color:var(--copper)}
+.task .foot{left:640px}
+.task .steps li{font-size:27px;line-height:1.45;margin-bottom:24px}
+.task .steps li small{font-size:22px;line-height:1.45}
+
+/* ---------- 表格 ---------- */
+table{width:100%;border-collapse:collapse;font-size:25px}
+th{text-align:left;font-weight:600;color:var(--ink);font-size:21px;letter-spacing:.06em;padding:14px 20px;border-bottom:2px solid var(--ink)}
+td{padding:18px 20px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+td:first-child{font-weight:600;color:var(--ink)}
+tr.hl td{background:#f3e3d8}
+
+.paper-title{display:block;font-size:24px;line-height:1.35;color:var(--ink)}
+.paper-meta{display:block;margin-top:8px;font-size:20px;line-height:1.45;font-weight:400;color:var(--muted)}
+
+.comparison-table td{font-size:22px;padding:12px 16px;line-height:1.4}
+.comparison-table .paper-title{font-size:21px;line-height:1.3}
+.comparison-table .paper-meta{font-size:19px;margin-top:6px;line-height:1.4}
+
+/* ---------- 回路图 ---------- */
+.loop{position:relative;width:820px;height:760px}
+.loop svg{position:absolute;inset:0}
+.node{position:absolute;width:300px;text-align:center;transform:translate(-50%,-50%)}
+.node .dot{width:118px;height:118px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-family:var(--serif);font-size:34px;color:#fff;background:var(--ink)}
+.node.c .dot{background:var(--copper)}
+.node b{display:block;font-size:30px;font-family:var(--serif)}
+.node span{font-size:21px;color:var(--muted);font-family:var(--mono)}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:250px;text-align:center;font-family:var(--serif);font-size:30px;color:var(--ink);line-height:1.4}
+
+/* ---------- 前后对比 ---------- */
+.ba{display:grid;grid-template-columns:1fr 90px 1fr;align-items:stretch;gap:0}
+.ba .arrow{display:grid;place-items:center;font-size:56px;color:var(--copper)}
+.ba .before{background:var(--paper2);border-radius:20px;padding:36px}
+.ba .after{background:var(--ink);color:#e9efe9;border-radius:20px;padding:36px}
+.ba .after b{color:#fff}
+.ba .lbl{font-size:20px;letter-spacing:.22em;font-weight:600;color:var(--muted);margin-bottom:14px}
+.ba .after .lbl{color:var(--copper-l)}
+.ba p{font-family:var(--serif);font-size:36px;line-height:1.45;margin:0}
+.strike{text-decoration:line-through;text-decoration-color:var(--copper);text-decoration-thickness:3px;color:#7d837e}
+
+.big-q{font-family:var(--serif);font-size:76px;line-height:1.35;color:var(--ink);border-left:8px solid var(--copper);padding-left:48px;margin:30px 0 0}
+.formula{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px}
+.formula .f{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 26px;font-size:28px}
+.formula .f small{display:block;font-size:19px;color:var(--muted)}
+.formula .x{font-size:30px;color:var(--copper)}
+.check li{list-style:none;position:relative;padding-left:56px;margin-bottom:22px}
+.check{padding:0;margin:0}
+.check li::before{content:"";position:absolute;left:0;top:10px;width:30px;height:30px;border:2px solid var(--copper);border-radius:8px}
+.signup{display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:center}
+.ticket{background:var(--ink);color:#fff;border-radius:28px;padding:56px 60px;position:relative}
+.ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:48px;height:48px;border-radius:50%;background:var(--paper);transform:translateY(-50%)}
+.ticket::before{left:-24px}.ticket::after{right:-24px}
+.ticket .n{font-family:var(--serif);font-size:170px;line-height:1;color:var(--copper-l)}
+.ticket .n small{font-size:44px;color:#fff;margin-left:10px}
+.ticket .url{margin-top:30px;font-family:var(--mono);font-size:44px;color:#fff}
+.ticket .row2{margin-top:30px;display:flex;gap:40px;font-size:24px;color:#b8c8c3}
+.ticket .row2 b{display:block;color:#fff;font-family:var(--mono);font-size:26px;font-weight:500}
+.code{font-family:var(--mono);font-size:24px;background:#1b2b29;color:#dfe8e4;border-radius:14px;padding:24px 28px;line-height:1.6;white-space:pre}
+.code .cm{color:#86a39c}
+
+/* ---------- 讲者备注抽屉 / 概览 / 演讲者视图 ---------- */
+#drawer{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(14,25,24,.96);color:#e6ece9;
+  font:16px/1.75 var(--sans);padding:18px 28px;display:none;white-space:pre-wrap;z-index:5;border-top:2px solid var(--copper)}
+body.show-notes #drawer{display:block}
+#help{position:fixed;right:16px;bottom:12px;color:#5f7470;font:12px var(--sans);z-index:4;transition:opacity .6s}
+#help.hide{opacity:0}
+body.overview #deck{overflow-y:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;padding:28px;align-content:start}
+body.overview .slide{display:block;position:relative;left:auto;top:auto;transform:none;zoom:.17;cursor:pointer;outline:8px solid transparent}
+body.overview .slide.active{outline-color:var(--copper)}
+body.presenter{background:#0b1312}
+body.presenter #deck{inset:24px 36vw 34vh 24px}
+#pv{display:none}
+body.presenter #pv{display:grid;position:fixed;inset:24px 24px 24px calc(64vw - 0px);grid-template-rows:auto auto 1fr;gap:16px;color:#dfe8e4;font-family:var(--sans)}
+body.presenter #help{display:none}
+#pv .clock{font:600 44px var(--mono);color:#fff}
+#pv .clock small{font-size:16px;color:#7f9893;margin-left:10px;cursor:pointer}
+#pv .next{font-size:16px;color:#93aaa4}#pv .next b{display:block;color:#fff;font-size:20px;margin-top:4px}
+#pv .pn{overflow:auto;white-space:pre-wrap;font-size:19px;line-height:1.75;background:#132321;border-radius:12px;padding:18px 20px}
+#pbottom{display:none}
+body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom:24px;height:calc(34vh - 40px);color:#93aaa4;font:15px/1.7 var(--sans);overflow:auto}
+
+@media print{
+  @page{size:1920px 1080px;margin:0}
+  html,body{background:none;height:auto}
+  #deck{position:static;overflow:visible}
+  .slide{display:block!important;position:relative;left:0;top:0;transform:none!important;break-after:page;page-break-after:always}
+  body.overview #deck{display:block;padding:0;overflow:visible}
+  body.overview .slide{zoom:1;outline:none}
+  #drawer,#help,#pv,#pbottom{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- ============ 开场 ============ -->
+<section class="slide dark cover" data-stage="0">
+  <div class="orbit"></div>
+  <div class="inner">
+    <div class="kicker" style="color:var(--copper-l)">温故而知新，不亦乐乎</div>
+    <h1>如何把 PaperDaily<br>作为你的<span>科研外脑</span></h1>
+    <p class="sub">
+      <span class="brandline"><img src="assets/paperdaily-mark.svg" alt="PaperDaily 品牌标识">知新 PaperDaily</span>
+      <span class="def"><b>温故：</b>重读已有文献与自己的证据、判断，弄清前人做到哪一步。</span>
+      <span class="def"><b>知新：</b>发现新线索，形成新问题。</span>
+    </p>
+  </div>
+  <div class="meta">
+    <div>问清楚嘛<b>ask.paperdaily.org</b></div>
+    <div>知新 PaperDaily<b>paperdaily.org</b></div>
+    <div>深读 RiD<b>read.paperdaily.org</b></div>
+  </div>
+  
+</section>
+
+<section class="slide evidence-value" data-stage="0">
+  <div class="kicker">有来源的研究基座 · 可接续的研究积累</div>
+  <h2 class="title" style="font-size:60px">为什么 PaperDaily 值得成为你的科研外脑</h2>
+  <p class="lead" style="font-size:25px;line-height:1.35">以有来源的资料补充个人理解，持续跟进研究现状；保存证据与判断，让 Agent 接续研究。</p>
+  <div class="evidence-grid">
+    <div class="card"><strong>约9,052<small>万篇</small></strong><h3>已有论文</h3></div>
+    <div class="card"><strong>13,191<small>条</small></strong><h3>10月31日入库</h3></div>
+    <div class="card"><strong>1,438<small>个</small></strong><h3>期刊RSS观测来源</h3></div>
+    <div class="card"><strong style="font-size:36px">94 → 30 → 14</strong><h3>日报示例＋速览5篇</h3></div>
+    <div class="card"><strong style="font-size:36px">600+ / 7</strong><h3>登记数据集 / 方法类别</h3></div>
+  </div>
+  <table class="source-fields">
+    <tr><th style="width:21%">领域</th><th>按领域列举的期刊来源示例</th></tr>
+        <tr><td>经济学</td><td>American Economic Review · Quarterly Journal of Economics · Journal of Political Economy · Econometrica · Review of Economic Studies</td></tr>
+        <tr><td>金融</td><td>Journal of Finance · Journal of Financial Economics · Review of Financial Studies</td></tr>
+        <tr><td>会计</td><td>The Accounting Review · Journal of Accounting Research · Journal of Accounting and Economics</td></tr>
+        <tr><td>管理、组织与战略</td><td>Academy of Management Journal · Academy of Management Review · Administrative Science Quarterly · Organization Science · Journal of International Business Studies · Strategic Management Journal</td></tr>
+        <tr><td>营销</td><td>Journal of Marketing · Journal of Marketing Research · Journal of Consumer Research · Marketing Science</td></tr>
+        <tr><td>信息系统与计算</td><td>MIS Quarterly · Information Systems Research · INFORMS Journal on Computing</td></tr>
+        <tr><td>管理科学与运营</td><td>Management Science · Operations Research · Journal of Operations Management · Manufacturing & Service Operations Management · Production and Operations Management</td></tr>
+  </table>
+  <div class="source-channels"><b>预印本与工作论文</b><span>arXiv · SSRN · NBER · CEPR · IZA（后3项通过 RePEc 跟踪）</span><b>元数据与引用补充</b><span>OpenAlex 等；核对论文版本与出处后，再通过本人授权获取原文。</span></div>
+  <p class="evidence-source">核验：2026-11-01；期刊观测快照为10/31。所列来源均有采集批次；仅列来源示例，不是完整期刊目录。<br>论文数不代表全文覆盖；数据集为已核验下界；日报为公开示范。<a href="数据来源与领域期刊.md">来源、缩写与口径</a> · <a href="日报如何筛选.md">日报筛选过程</a></p>
+  
+</section>
+
+<section class="slide" data-stage="0" style="padding-top:150px">
+  <div class="kicker">科研外脑的价值 · 辨清三类缺口</div>
+  <h2 class="title" style="font-size:60px">补上个人的缺口，持续接近研究所知</h2>
+  <p class="lead" style="font-size:27px">“我还回答不了”，可能需要补充学习、补充检索，也可能需要开展新的研究。</p>
+  <div class="g3" style="margin-top:34px;gap:28px">
+    <div class="card" style="padding:24px 28px;border-top:6px solid var(--copper)">
+      <span class="tag c">个人与已有知识之间</span><h3 style="font-size:32px;margin-top:16px">个人知识缺口</h3>
+      <p style="font-size:25px;line-height:1.45;color:var(--text);margin-top:16px">我尚未掌握，<br>已有研究已提供答案。</p>
+      <div class="rule" style="margin:18px 0"></div><p style="font-size:23px;line-height:1.5"><b>下一步：</b>找到相关研究，通过阅读、比较与讨论形成理解。</p>
+    </div>
+    <div class="card" style="padding:24px 28px;border-top:6px solid var(--ink)">
+      <span class="tag">系统与研究现状之间</span><h3 style="font-size:32px;margin-top:16px">系统覆盖缺口</h3>
+      <p style="font-size:25px;line-height:1.45;color:var(--text);margin-top:16px">平台尚未收录、未检索到，<br>或未正确理解相关研究。</p>
+      <div class="rule" style="margin:18px 0"></div><p style="font-size:23px;line-height:1.5"><b>下一步：</b>扩展来源、核对原文、修正理解，明确覆盖不足。</p>
+    </div>
+    <div class="card" style="padding:24px 28px;border-top:6px solid var(--copper)">
+      <span class="tag c">已有研究的解释与证据边界</span><h3 style="font-size:32px;margin-top:16px">研究缺口</h3>
+      <p style="font-size:25px;line-height:1.45;color:var(--text);margin-top:16px">在明确范围与时间条件下，<br>现有研究仍未充分回答。</p>
+      <div class="rule" style="margin:18px 0"></div><p style="font-size:23px;line-height:1.5"><b>下一步：</b>检查证据边界，提出值得进一步研究的问题。</p>
+    </div>
+  </div>
+  <div style="margin-top:30px;padding:22px 30px;background:var(--ink);border-radius:16px;color:#f6f5ef;font-size:27px;line-height:1.5">PaperDaily 的努力方向：让个人理解接上已有研究，让系统覆盖持续贴近研究现状。</div>
+  <p style="font-size:22px;line-height:1.45;margin:18px 0 0;color:var(--muted)">三类缺口可并存，尚不能判断时保留“待核”；“没搜到”不能直接写成“无人研究”。<a href="三类缺口与科研外脑.md">案例、记录与委托 →</a></p>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="kicker">开始之前</div>
+  <h2 class="title">注册并核对账号权益</h2>
+  <div class="signup" style="margin-top:40px">
+    <div class="ticket">
+      <div style="font-size:24px;letter-spacing:.24em;color:var(--copper-l)">有效机构资格 · 验证后认定</div>
+      <div class="n">300<small>积分 / 天</small></div>
+      <div class="url">paperdaily.org/signup</div>
+      <div class="row2">
+        <div>机构邮箱示例<b>@swufe.edu.cn</b></div>
+        <div>机构邮箱示例<b>@mail.swufe.edu.cn</b></div>
+      </div>
+    </div>
+    <div>
+      <ol class="steps">
+        <li>打开 <b class="mono">paperdaily.org/signup</b><small>阅读协议，完成安全验证，无需邀请码</small></li>
+        <li>用已登记的机构邮箱注册并验证<small>验证后在账号设置核对资格、期限与额度</small></li>
+        <li>同一账号登录 <b class="mono">ask.paperdaily.org</b><small>两个工具共用账号与额度</small></li>
+      </ol>
+      <p class="muted" style="font-size:23px;margin-top:20px">邮箱已验证的免费账号每日 100；有效 Pro／机构成员每日 300。个人日报准入另行核对；余额与结算看「积分」页。<a href="https://www.paperdaily.org/help/reference/account-benefits" target="_blank" rel="noopener">权益说明</a></p>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="kicker">学习目标</div>
+  <h2 class="title">本工作坊的学习目标与实践成果</h2>
+  <div class="g3" style="margin-top:40px;gap:24px">
+    <div class="card"><span class="tag c">01 · 问清楚</span><h3 style="margin-top:16px;font-size:30px">提出可检索的研究问题</h3><p style="font-size:23px">明确对象、结果与情境，形成一条检索表述</p></div>
+    <div class="card"><span class="tag c">02 · 找答案</span><h3 style="margin-top:16px;font-size:30px">核对综述论断与出处</h3><p style="font-size:23px">选取关键论断，记录来源、材料深度与核验状态</p></div>
+    <div class="card"><span class="tag c">03 · 比一比</span><h3 style="margin-top:16px;font-size:30px">比较论文并识别差异</h3><p style="font-size:23px">形成 3–5 篇论文的比较矩阵，说明结论是否可比</p></div>
+    <div class="card"><span class="tag c">04 · 读原文</span><h3 style="margin-top:16px;font-size:30px">阅读原文并记录证据</h3><p style="font-size:23px">留下原文位置、自己的理解与判断依据</p></div>
+    <div class="card"><span class="tag c">05 · 跟进展</span><h3 style="margin-top:16px;font-size:30px">建立持续跟进的研究议题</h3><p style="font-size:23px">设置研究兴趣与待跟进问题，检查后续日报中的线索</p></div>
+    <div class="card" style="background:var(--ink);border:none"><span class="tag c">06 · 你的 Agent</span><h3 style="margin-top:16px;font-size:30px;color:#fff">委托 Agent 并验收研究产出</h3><p style="font-size:23px;color:#b8c8c3">完成一次委托与验收，保存可供下一轮调用的研究记录</p></div>
+  </div>
+  <div class="rule" style="margin-top:40px"></div>
+  <p class="lead">以「研究推进卡」汇总问题、证据、待核验事项与下一步行动。</p>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="kicker">为什么需要这套流程</div>
+  <h2 class="title">研究中的五类常见困难</h2>
+  <table style="margin-top:36px">
+    <tr><th style="width:22%">研究环节</th><th style="width:40%">典型表现</th><th>今天用什么解决</th></tr>
+    <tr><td>问题太大</td><td>只有方向，说不清要解释什么</td><td><b>问清楚嘛</b> 边输入边追问：对象、结果、方法、时间</td></tr>
+    <tr><td>材料太散</td><td>搜到很多，不知哪句可信</td><td><b>综述 + 角标</b> 从引用入口核对关键论断与出处</td></tr>
+    <tr><td>结论差异与可比性</td><td>都说“AI 提高效率”，却不可比</td><td><b>综述矩阵</b> 对象、方法、数据、材料深度放一张表</td></tr>
+    <tr><td>理解不深</td><td>能复述结论，说不清证据在哪</td><td><b>深读 RiD</b> 带着问题读原文，留下证据</td></tr>
+    <tr class="hl"><td>每次重来</td><td>上周读的，这周又从零开始</td><td><b>兴趣 · 日报 · 开放问题</b> 让新论文来找旧问题</td></tr>
+  </table>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="row" style="align-items:center;gap:90px">
+    <div style="flex:1">
+      <div class="kicker">三个工具，一条回路</div>
+      <h2 class="title">围绕研究问题，<br>持续积累证据与判断</h2>
+      <p class="lead" style="margin-top:24px">围绕问题检索、比较和阅读，保存证据与待核验事项；再结合后续日报，判断哪些新线索值得继续研究。</p>
+      <div class="card" style="margin-top:40px;border:2px solid var(--copper);background:#fbf3ee">
+        <h3 style="font-size:28px">主动窗口：你自己的 Agent</h3>
+        <p>通过 MCP 与 skills 调用整条回路——读日报、查论文库、做比较、派阅读卡、写研究记录。研究者定方向，Agent 组织行动。</p>
+      </div>
+    </div>
+    <div class="loop">
+      <svg viewBox="0 0 820 760"><defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b36542"/></marker></defs>
+        <circle cx="410" cy="380" r="275" fill="none" stroke="#dcd9cc" stroke-width="2"/>
+        <path d="M520 128 A275 275 0 0 1 662 270" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah)"/>
+        <path d="M662 490 A275 275 0 0 1 520 632" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah)"/>
+        <path d="M300 632 A275 275 0 0 1 158 490" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah)"/>
+        <path d="M158 270 A275 275 0 0 1 300 128" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah)"/>
+      </svg>
+      <div class="node c" style="left:410px;top:105px"><div class="dot">问</div><b>问清楚</b><span>ask.paperdaily.org</span></div>
+      <div class="node" style="left:700px;top:380px"><div class="dot">找</div><b>找答案 · 比一比</b><span>paperdaily.org</span></div>
+      <div class="node" style="left:410px;top:660px"><div class="dot">读</div><b>读原文</b><span>read.paperdaily.org</span></div>
+      <div class="node" style="left:120px;top:380px"><div class="dot">跟</div><b>跟进展</b><span>日报 · 开放问题</span></div>
+      <div class="center">你的<br>研究问题</div>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="kicker"><span class="case">贯穿案例</span>贯穿案例与个人研究问题</div>
+  <p class="big-q">AI 让新员工今天做得更好，<br>会不会也让他以后独立做得更好？</p>
+  <div class="g3" style="margin-top:80px">
+    <div><span class="tag">已有基础</span><p style="margin-top:14px">两篇历史研究：客服现场、专业写作</p></div>
+    <div><span class="tag">今天的新材料</span><p style="margin-top:14px">日报带来 Agent 执行与协作的新论文</p></div>
+    <div><span class="tag">要判断的</span><p style="margin-top:14px">新材料支持或修订了什么？还需核对哪些原文？</p></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="0">
+  <div class="kicker">三条使用守则</div>
+  <h2 class="title">追溯来源，判断证据能支持什么</h2>
+  <div class="g3" style="margin-top:56px">
+    <div class="card" style="border-top:6px solid var(--copper)"><h3>① 核对论断与出处</h3><p>从引用入口回到原文或摘要，核对材料是否支持这条论断；缺少出处的内容保留为待核线索。</p></div>
+    <div class="card" style="border-top:6px solid var(--copper)"><h3>② 先看材料深度</h3><p>区分全文、摘要与平台抽取；方法和机制的具体判断，需要回到相应原文核验。</p></div>
+    <div class="card" style="border-top:6px solid var(--copper)"><h3>③ 记录理解与未知</h3><p>说明哪些判断得到支持或修订，哪些概念与边界更清楚，以及仍需核验的问题。</p></div>
+  </div>
+  <p class="lead" style="margin-top:56px">后续练习的完成标志，都包含来源核对、材料深度与研究记录。</p>
+  
+</section>
+
+<!-- ============ 议程 ============ -->
+<section class="slide" data-stage="0">
+  <div class="kicker">今天的安排</div>
+  <h2 class="title">两个半场：先学会判断，再学会委托</h2>
+  <div class="g2" style="margin-top:40px;gap:48px">
+    <div class="card"><span class="tag">上半场</span><h3 style="margin-top:18px">完成研究流程练习</h3>
+      <table style="margin-top:12px;font-size:24px">
+        <tr><td style="width:36%">01 问清楚</td><td>ask 澄清 · 动手练习</td></tr>
+        <tr><td>02 找答案</td><td>综述与角标 · 动手练习</td></tr>
+        <tr><td>03 比一比</td><td>综述矩阵 · 动手练习</td></tr>
+        <tr><td>04 读原文</td><td>深读 RiD · 动手练习</td></tr>
+        <tr><td>05 跟进展</td><td>日报与盯查 · 动手练习</td></tr>
+      </table></div>
+    <div class="card" style="background:var(--ink);border:none"><span class="tag c">下半场</span><h3 style="margin-top:18px;color:#fff">交给你的 Agent</h3>
+      <table style="margin-top:12px;font-size:24px;color:#e9efe9">
+        <tr><td style="width:36%;color:#fff">接上</td><td>MCP 或 skills · 动手练习</td></tr>
+        <tr><td style="color:#fff">委托</td><td>好委托的六个部分</td></tr>
+        <tr><td style="color:#fff">验收</td><td>验收四问与实测问题</td></tr>
+        <tr><td style="color:#fff">接续</td><td>第二轮、日报深析、研究记录</td></tr>
+        <tr><td style="color:#fff">实战</td><td>向 Agent 委托，并验收产出</td></tr>
+      </table></div>
+  </div>
+  <p class="lead" style="margin-top:34px">上半场学到的每个判断，都是下半场验收 Agent 时要用的标准。中场可根据现场情况休息。</p>
+  
+</section>
+
+<!-- ============ 01 问清楚 ============ -->
+<section class="slide dark divider" data-stage="1">
+  <div class="num">01</div>
+  <div class="txt"><div class="kicker">问清楚</div><h2>搜索之前，<br>先把问题问清楚</h2><p class="lead">明确研究问题，才能判断哪些文献需要优先阅读。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>输入一个模糊的念头</p><p>走两轮澄清</p><p>写下一句可检索的问题</p><div class="tool">ask.paperdaily.org</div></div>
+  
+</section>
+
+<section class="slide" data-stage="1">
+  <div class="kicker"><span class="case">贯穿案例</span>演示 · 问清楚嘛</div>
+  <h2 class="title">它会边听边追问：你到底想看哪一面？</h2>
+  <div class="demo" style="margin-top:28px">
+    <div class="shot darkui"><div class="bar"><i></i><i></i><i></i><span>ask.paperdaily.org</span></div><img src="assets/04-ask-broad-question.jpg" style="height:590px;object-fit:contain;background:#202124" alt="问清楚嘛：输入宽泛主题后出现的研究角度选项"></div>
+    <ol class="callouts">
+      <li><b>只输一个念头</b>「生成式 AI 对企业员工的影响」</li>
+      <li><b>挑一个角度</b>效率、技能、心理、组织……点选即可，不用写长提示词</li>
+      <li><b>再追问一轮</b>对象是谁？结果怎么测？「换师兄来问」换一种问法</li>
+      <li><b>够了，直接搜</b>出速览，或生成带出处的深度综述</li>
+    </ol>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="1">
+  <div class="kicker">方法 · 什么叫“问清楚”</div>
+  <h2 class="title">示例：把一个因果问题问具体</h2>
+  <div class="formula" style="margin-top:34px">
+    <div class="f"><small>对象</small>新员工</div><span class="x">×</span>
+    <div class="f"><small>处理</small>引导式 AI</div><span class="x">×</span>
+    <div class="f"><small>结果</small>撤辅后的独立表现</div><span class="x">×</span>
+    <div class="f"><small>情境</small>客服、写作等任务</div><span class="x">×</span>
+    <div class="f"><small>证据类型</small>实验 / 准实验</div>
+  </div>
+  <div class="g2" style="margin-top:56px">
+    <div class="card"><span class="tag">之前 · 主题</span><p style="margin-top:18px;font-family:var(--serif);font-size:38px;color:var(--text)">生成式 AI 对企业员工有什么影响？</p><p style="margin-top:14px">对象、结果、时间都没定，什么论文都“相关”</p></div>
+    <div class="card" style="border-color:var(--ink);border-width:2px"><span class="tag c">之后 · 问题</span><p style="margin-top:18px;font-family:var(--serif);font-size:38px;color:var(--ink)">引导式 AI 是否改善新员工<br>撤去辅助后的独立表现？</p><p style="margin-top:14px">知道该找什么样本、什么结果、什么设计</p></div>
+  </div>
+  <p class="lead" style="margin-top:40px;font-size:26px"><b class="copper">留意：</b>澄清也会带入预设。写问题时保留“促进 / 无效 / 损害”三种可能，不要把答案写进问题里。</p>
+  
+</section>
+
+<section class="slide task" data-stage="1">
+  <div class="band"><div class="lbl">动手 01</div><h2>把你的念头<br>问成一句问题</h2>
+    <div class="hint">遇到问题可以举手示意</div>
+    <div class="where">ask.paperdaily.org</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">每人一个问题</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>输入一个你最近在想的研究念头<small>没有的话，用今天的案例</small></li>
+      <li>至少走两轮澄清：先选角度，再收窄对象或结果</li>
+      <li>点「够了，直接搜」，看一眼速览列出的论文</li>
+      <li>把最终问题抄到研究推进卡第一行<small>检查五要素：对象 · 处理 · 结果 · 情境 · 证据类型</small></li>
+    </ol>
+    <div class="agent-strip"><span>也可以交给 Agent</span>「把这个念头拆成 3 个可检索的研究问题，每个写清对象、结果、情境和证据类型」</div>
+    <div class="done-box"><div class="lbl">完成标志</div><p>你的问题里有<b>具体的对象和结果</b>，并能据此说明该检索哪些文献。</p></div>
+  </div>
+  
+</section>
+
+<!-- ============ 02 找答案 ============ -->
+<section class="slide dark divider" data-stage="2">
+  <div class="num">02</div>
+  <div class="txt"><div class="kicker">找答案</div><h2>追溯出处，<br>检验综述论断</h2><p class="lead">从关键论断回到论文，核对来源、材料范围与支持程度。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>生成一份带出处的综述</p><p>点开两个角标核对</p><p>收藏 3–5 篇值得读的</p><div class="tool">paperdaily.org/search</div></div>
+  
+</section>
+
+<section class="slide" data-stage="2">
+  <div class="kicker">演示 · 论文详情</div>
+  <h2 class="title">点进一篇论文，先看三件事</h2>
+  <div class="demo" style="margin-top:28px">
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>paperdaily.org/paper/…</span></div><img src="assets/21-main-paper-identity.jpg" style="height:590px" alt="论文详情：题录、出处与版本"></div>
+    <ol class="callouts">
+      <li><b>它是谁</b>题名、作者、正式出处、DOI；预印本与正式版分开记</li>
+      <li><b>材料有多深</b>要点来自全文还是只来自摘要</li>
+      <li><b>前置分析</b>方法、数据、主要论点、未解问题——决定要不要细读</li>
+    </ol>
+  </div>
+  <p class="cap">截图：2026-10-31 实际界面，仅裁切</p>
+  
+</section>
+
+<section class="slide" data-stage="2">
+  <div class="kicker"><span class="case">贯穿案例</span>找到的两篇历史基线</div>
+  <h2 class="title">都说“AI 有帮助”，说的却不是一回事</h2>
+  <table style="margin-top:34px">
+    <tr><th style="width:31%">论文 · 作者 · 出处</th><th style="width:16%">谁在用 AI</th><th style="width:18%">测了什么</th><th style="width:16%">怎么识别</th><th>对我们的问题</th></tr>
+    <tr><td><a class="paper-title" href="https://doi.org/10.1093/qje/qjae044" target="_blank" rel="noopener">Generative AI at Work</a><span class="paper-meta">Erik Brynjolfsson · Danielle Li · Lindsey Raymond<br><i>The Quarterly Journal of Economics</i>, 2025</span></td><td>企业客服员工</td><td>工作绩效，及与学习相关的证据</td><td>AI 分阶段上线的现场数据</td><td>提供现场绩效与学习线索；<b>仍须区分即时收益与持续能力</b></td></tr>
+    <tr><td><a class="paper-title" href="https://doi.org/10.1126/science.adh2586" target="_blank" rel="noopener">Experimental evidence on the productivity effects of generative artificial intelligence</a><span class="paper-meta">Shakked Noy · Whitney Zhang<br><i>Science</i>, 2023</span></td><td>完成职业写作任务的专业人士</td><td>当场任务的速度与质量</td><td>在线随机实验</td><td>可识别即时任务效应；<b>未直接检验撤辅后的独立能力</b></td></tr>
+  </table>
+  <div class="card" style="margin-top:44px;background:var(--ink);border:none"><p style="color:#e9efe9;font-size:30px;font-family:var(--serif)">即时绩效提升已有证据；学习解释、长期保持与跨任务迁移，需要逐项核查。</p></div>
+  
+</section>
+
+<section class="slide task" data-stage="2">
+  <div class="band"><div class="lbl">动手 02</div><h2>生成综述，<br>核两个角标</h2>
+    <div class="hint">综述生成期间<br>等待时先看文献栏</div>
+    <div class="where">paperdaily.org/search</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">用你刚问清楚的问题</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>在 ask 生成深度综述，或在 PaperDaily「检索与问答」提问<small>等文字和文献栏都完成再摘录</small></li>
+      <li>挑两个最关键的判断，点开它们的角标</li>
+      <li>进论文详情：这句话在原文或摘要里真的这么说吗？<small>记录：支持 / 部分支持 / 不支持 / 材料不足</small></li>
+      <li>把 3–5 篇值得细读的论文点「保存」到收藏</li>
+    </ol>
+    <div class="agent-strip"><span>也可以交给 Agent</span>「按这个问题检索最多 8 篇候选，标出每篇的版本与材料深度；摘要里没有的写未知」</div>
+    <div class="done-box"><div class="lbl">完成标志</div><p>收藏 3–5 篇论文，完成<b>至少一条关键论断的核验</b>，说明支持程度、材料深度与待核验事项。</p></div>
+  </div>
+  
+</section>
+
+<!-- ============ 03 比一比 ============ -->
+<section class="slide dark divider" data-stage="3">
+  <div class="num">03</div>
+  <div class="txt"><div class="kicker">比一比</div><h2>放进同一张表，<br>分歧才看得见</h2><p class="lead">比较对象、指标与设计的差异，可以帮助明确下一项研究问题。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>用收藏生成综述矩阵</p><p>看清材料深度</p><p>写下一处比较断点</p><div class="tool">工作台 → 综述矩阵</div></div>
+  
+</section>
+
+<section class="slide" data-stage="3">
+  <div class="kicker">演示 · 综述矩阵</div>
+  <h2 class="title">一行一篇，一列一个比较维度</h2>
+  <div class="demo" style="margin-top:28px">
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>paperdaily.org/workbench · 综述矩阵</span></div><img src="assets/05-workbench-matrix.jpg" style="height:590px" alt="综述工作台：文献矩阵"></div>
+    <ol class="callouts">
+      <li><b>先看「深度」列</b>全文级还是摘要级——说明可核验的材料范围</li>
+      <li><b>横着比</b>主要论点、方法、数据、未解问题</li>
+      <li><b>带走</b>保存矩阵、复制 Markdown 或导出 CSV，放进自己的笔记和论文</li>
+    </ol>
+  </div>
+  <p class="cap">矩阵生成免费 · 截图：2026-10-31 实际界面</p>
+  
+</section>
+
+<section class="slide" data-stage="3">
+  <div class="kicker"><span class="case">贯穿案例</span>日报带来两篇新论文，和两篇旧基线放一起</div>
+  <h2 class="title">比较断点：两篇测机器，两篇测人</h2>
+  <table class="comparison-table" style="margin-top:28px">
+    <tr><th style="width:36%">材料</th><th style="width:10%">来源</th><th style="width:26%">观察单位与结果</th><th>能帮我们什么</th></tr>
+    <tr><td><a class="paper-title" href="https://arxiv.org/abs/2610.04672v1" target="_blank" rel="noopener">MASBench: Benchmarking LLM-based Multi-Agent Collaboration under Partial Observability</a><span class="paper-meta">Chu 等 · arXiv, 2026</span></td><td>日报</td><td>多智能体系统的协作表现与成本</td><td>拆开“执行”与“协调”怎么测</td></tr>
+    <tr><td><a class="paper-title" href="https://arxiv.org/abs/2610.29751v1" target="_blank" rel="noopener">Bridging Foundational and Agentic Capabilities of LLMs</a><span class="paper-meta">Guo 等 · arXiv, 2026</span></td><td>日报</td><td>模型的基础能力与实际操作表现</td><td>能力怎样转化为执行</td></tr>
+    <tr class="hl"><td><span class="paper-title">Generative AI at Work</span><span class="paper-meta">Brynjolfsson, Li &amp; Raymond · QJE, 2025</span></td><td>论文库</td><td>客服员工的绩效与学习</td><td>现场的历史基线</td></tr>
+    <tr class="hl"><td><span class="paper-title">Experimental evidence on the productivity effects of generative artificial intelligence</span><span class="paper-meta">Noy &amp; Zhang · Science, 2023</span></td><td>论文库</td><td>写作者的即时速度与质量</td><td>实验的历史基线</td></tr>
+  </table>
+  <div class="ba" style="margin-top:36px;grid-template-columns:1fr 80px 1.3fr">
+    <div class="before"><div class="lbl">不能这样用</div><p style="font-size:30px">技术基准分数 ≠ 企业员工效应</p></div>
+    <div class="arrow">→</div>
+    <div class="after"><div class="lbl">可以这样用</div><p style="font-size:30px">AI 从“给建议”变成“替你执行”，<br>员工学习的条件会改变吗？</p></div>
+  </div>
+  
+</section>
+
+<section class="slide task" data-stage="3">
+  <div class="band"><div class="lbl">动手 03</div><h2>生成矩阵，<br>核对可比性</h2>
+    <div class="hint">矩阵生成免费<br>核对比较维度与材料深度</div>
+    <div class="where">我的收藏 → 生成综述矩阵</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">用刚才收藏的 3–5 篇</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>在「我的收藏」勾选论文，点「生成综述矩阵」</li>
+      <li>先数一数：几篇全文级、几篇摘要级？</li>
+      <li>核对论文间的<b>可比性与差异</b><small>对象不同？结果指标不同？设计不同？时间跨度不同？</small></li>
+      <li>写下一项比较结论：可以合并讨论、需要分组，或材料尚不足以判断</li>
+    </ol>
+    <div class="agent-strip"><span>也可以交给 Agent</span>「把这些论文做成比较矩阵，核对对象、指标和设计；说明可比、不可比或信息不足，不预设必须发现分歧」</div>
+    <div class="done-box"><div class="lbl">完成标志</div><p>你能依据矩阵说明<b>哪些结果可比、哪些需分开讨论，或还缺哪些信息</b>，并指出对应字段。</p></div>
+  </div>
+  
+</section>
+
+<!-- ============ 04 读原文 ============ -->
+<section class="slide dark divider" data-stage="4">
+  <div class="num">04</div>
+  <div class="txt"><div class="kicker">读原文</div><h2>用原文检验<br>已有判断</h2><p class="lead">先围绕一个争点定向阅读，再决定是否需要扩展阅读。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>带着问题打开一篇论文</p><p>选段理解、对照译文</p><p>留下一条证据</p><div class="tool">read.paperdaily.org</div></div>
+  
+</section>
+
+<section class="slide" data-stage="4">
+  <div class="kicker"><span class="case">贯穿案例</span>一次真实的判断修订 · 由 Agent 第二轮核验完成</div>
+  <h2 class="title">综述说“没检验”，原文第 5.2 节检验了</h2>
+  <div class="ba" style="margin-top:30px">
+    <div class="before"><div class="lbl">读原文之前 · 来自综述概括</div><p class="strike">作者没有检验撤去 AI 之后员工的表现。</p><p style="font-size:24px;font-family:var(--sans);color:var(--muted);margin-top:22px">尚未核对已有证据，先形成了“空白”判断。</p></div>
+    <div class="arrow">→</div>
+    <div class="after"><div class="lbl">读原文之后 · arXiv v2 §5.2</div><p>已有 AI <b>临时中断期间</b>的表现分析；<br>但<b>长期保持与跨任务迁移</b>仍待核。</p><p style="font-size:24px;font-family:var(--sans);color:#b8c8c3;margin-top:22px">先补理解、纠正概括，再核查仍未回答的问题。</p></div>
+  </div>
+  <div class="g3" style="margin-top:34px">
+    <div><span class="tag">作者做了什么</span><p style="margin-top:10px;font-size:25px">比较 AI 建议因技术故障暂停时的处理表现</p></div>
+    <div><span class="tag">作者自己说的局限</span><p style="margin-top:10px;font-size:25px">中断稀少、不必然随机，估计较噪</p></div>
+    <div><span class="tag c">下一步最小任务</span><p style="margin-top:10px;font-size:25px">核对 QJE 正式版是否保留这组分析</p></div>
+  </div>
+  <div class="shot" style="margin-top:34px"><div class="bar"><i></i><i></i><i></i><span>verification.md · 原文核验结论（第二轮）</span></div><img src="assets/25-workbuddy-original-verification.jpg" style="height:150px" alt="原文核验记录"></div>
+  
+</section>
+
+<section class="slide" data-stage="4">
+  <div class="kicker">演示 · 深读 RiD</div>
+  <h2 class="title">带着问题读：正文、译文、证据在一屏</h2>
+  <div class="demo" style="margin-top:28px;grid-template-columns:1.25fr 1fr">
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>read.paperdaily.org</span></div><img src="assets/18-rid-bilingual.jpg" style="height:590px" alt="深读：原文与译文对照"></div>
+    <ol class="callouts">
+      <li><b>带着问题读</b>从你的研究问题进入论文，阅读时问题始终在侧栏</li>
+      <li><b>选段就能问</b>选中一段：解释、翻译、追问方法，原文和译文逐段对照</li>
+      <li><b>留下证据</b>原文片段 + 你的理解 + 它支持还是削弱哪条判断</li>
+      <li><b>核验综述</b>把 ask 的综述论断逐条对到原文段落</li>
+    </ol>
+  </div>
+  <p class="cap">截图为2026-10-31阅读界面；新侧栏与核验功能以现场界面为准。</p>
+  
+</section>
+
+<section class="slide" data-stage="4">
+  <div class="kicker">一条好证据长什么样</div>
+  <h2 class="title">摘一句话不够，要连同理解一起留下</h2>
+  <div class="demo" style="margin-top:34px;grid-template-columns:1.35fr 1fr;gap:56px">
+    <div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>证据笔记</span></div><img src="assets/20-rid-evidence-note.jpg" style="height:320px;object-fit:contain;background:#fff" alt="证据笔记"></div>
+      <div class="g2" style="margin-top:34px;gap:28px">
+        <div class="card" style="padding:26px"><span class="tag">只摘一句</span><p style="margin-top:12px">“AI 增加协作”——下次再看，已经不知道样本、指标和适用边界</p></div>
+        <div class="card" style="padding:26px;border-color:var(--ink)"><span class="tag c">证据卡</span><p style="margin-top:12px">下次可以直接回到同一个争点继续</p></div>
+      </div>
+    </div>
+    <ul class="check" style="margin-top:6px">
+      <li><b>原文片段</b><br><span class="muted">带页码或章节、版本</span></li>
+      <li><b>作者怎么得出的</b><br><span class="muted">样本、指标、设计</span></li>
+      <li><b>我的理解</b><br><span class="muted">用自己的话说一遍</span></li>
+      <li><b>它支持或修订哪条判断</b><br><span class="muted">支持 / 削弱 / 缩小范围</span></li>
+      <li><b>还缺什么</b><br><span class="muted">下一项最小核验</span></li>
+    </ul>
+  </div>
+  
+</section>
+
+<section class="slide task" data-stage="4">
+  <div class="band"><div class="lbl">动手 04</div><h2>带着问题，<br>读一段原文</h2>
+    <div class="hint">本环节练习定向阅读<br>选择与争点相关的段落</div>
+    <div class="where">read.paperdaily.org</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">一篇论文、一个段落</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>从收藏里挑一篇<b>有全文</b>的论文，在深读里打开<small>没有可读全文：改做摘要或抽取核对，并记录实际材料范围</small></li>
+      <li>关联你的研究问题，找到方法、结果或局限中最相关的一段</li>
+      <li>选段 → 解释 / 翻译，看懂作者怎么得出结论</li>
+      <li>保存一条证据：片段 + 理解 + 它支持或修订哪条判断</li>
+    </ol>
+    <div class="agent-strip"><span>也可以交给 Agent</span>「在已取得的全文中阅读与争点相关的段落，说明支持、修订或未知，记下版本与位置；没有全文时如实报告」</div>
+    <div class="done-box"><div class="lbl">完成标志</div><p>你有一条<b>标明来源与位置的阅读记录</b>，说明支持、修订或未知；替代练习标明未读全文。</p></div>
+  </div>
+  
+</section>
+
+<!-- ============ 05 跟进展 ============ -->
+<section class="slide dark divider" data-stage="5">
+  <div class="num">05</div>
+  <div class="txt"><div class="kicker">跟进展</div><h2>持续关注与<br>研究问题相关的新线索</h2><p class="lead">研究不是一次搜索，是一段持续的观察。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>写一段研究自述</p><p>检查抽到的兴趣点</p><p>把未解问题设为「盯查」</p><div class="tool">兴趣模型 · 工作台 → 问题</div></div>
+  
+</section>
+
+<section class="slide" data-stage="5">
+  <div class="kicker">演示 · 每日研究报告</div>
+  <h2 class="title">日报如何从候选中分层筛选</h2>
+  <p class="lead" style="font-size:25px">10/31示范：近7日候选94篇 → 分层输入30篇 → 主报告14篇；另列前沿速览5篇</p>
+  <div class="demo" style="margin-top:24px;grid-template-columns:1.35fr 1fr;gap:48px">
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>paperdaily.org/today</span></div><img src="assets/28-daily-old-question-clue.jpg" style="height:480px;object-position:0 40%" alt="2026年10月31日公开示范日报中的旧问题线索"></div>
+    <div>
+      <table style="font-size:23px">
+        <tr><th style="width:28%">层次</th><th style="width:14%">示例</th><th>帮助你做什么</th></tr>
+        <tr><td>必读</td><td>3篇</td><td>优先关注高度相关、关注作者或引用关联的论文</td></tr>
+        <tr><td>视野更新</td><td>8篇</td><td>按主题组织，共看进展与差异</td></tr>
+        <tr><td>你的线索</td><td>1篇</td><td>对照旧研究与问题，判断是否值得追查</td></tr>
+        <tr><td>意外发现</td><td>2篇</td><td>拓宽视角，寻找相邻方向的连接</td></tr>
+      </table>
+      <div class="card" style="margin-top:20px;padding:20px 24px"><p style="font-size:23px"><b>前沿速览另列5篇：</b>从相关计算方向的近期 arXiv 中补充，不计入上述四层14篇。</p></div>
+      <p class="muted" style="font-size:22px;margin-top:18px">核对“为何相关”与原文；入选和语义相似都不代表问题已被回答。</p>
+    </div>
+  </div>
+  <p class="cap">2026-10-31公开示范；数量随方向与日期变化。<a href="日报如何筛选.md">召回、候选池与分层依据 →</a></p>
+  
+</section>
+
+<section class="slide" data-stage="5">
+  <div class="kicker">方法 · 写一段好的研究自述</div>
+  <h2 class="title">写具体的问题，而不是一串学科名</h2>
+  <div class="g2" style="margin-top:34px;grid-template-columns:1.4fr 1fr">
+    <div class="card" style="background:var(--card)"><span class="tag c">可直接改写的示例</span>
+      <p style="margin-top:20px;font-family:var(--serif);font-size:31px;line-height:1.7;color:var(--text)">我研究生成式 AI 对企业新员工技能形成的影响，重点关注 AI 辅助撤去后的独立表现、技能保持与跨任务迁移。优先关注有对照组、分阶段上线或纵向追踪的实证研究，也关注人机协作中的核验与返工负担。暂不关注只报告使用满意度的产品介绍。</p></div>
+    <div>
+      <ul class="check">
+        <li><b>对象 + 具体问题</b><br><span class="muted">新员工 · 撤辅后的独立表现</span></li>
+        <li><b>方法偏好</b><br><span class="muted">对照组、DiD、纵向追踪</span></li>
+        <li><b>排除范围</b><br><span class="muted">只报告满意度的不要</span></li>
+        <li><b>保存后检查</b><br><span class="muted">兴趣点准确，粒度符合当前问题</span></li>
+      </ul>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide task" data-stage="5">
+  <div class="band"><div class="lbl">动手 05</div><h2>设好兴趣，<br>盯住一个问题</h2>
+    <div class="hint">后续查看日报<br>核对新线索的相关性</div>
+    <div class="where">我的研究 → 兴趣模型</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">设置研究兴趣与跟进问题</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>「兴趣模型」写一段研究自述，点「保存并更新研究兴趣」</li>
+      <li>检查匹配结果：名称、粒度与权重是否符合当前问题</li>
+      <li>工作台 →「问题」：把第四段留下的“还缺什么”写成一个开放问题</li>
+      <li>点「盯查」，确认状态变成「盯查中」</li>
+    </ol>
+    <div class="agent-strip"><span>也可以交给 Agent</span>「读我今天的日报，挑出可能回答我开放问题的线索，逐条说明为何相关」</div>
+    <div class="done-box"><div class="lbl">完成标志</div><p>兴趣匹配符合研究范围，<b>问题状态已核对</b>；具备日报准入时，后续检查是否出现值得核验的相关线索。</p></div>
+  </div>
+  
+</section>
+
+<!-- ============ 中场 ============ -->
+<section class="slide" data-stage="9">
+  <div class="kicker">中场 · 回顾与准备</div>
+  <h2 class="title">上半场练习研究流程，<br>下半场学习委托 Agent</h2>
+  <div class="g2" style="margin-top:44px;gap:56px">
+    <div class="card"><span class="tag c">回顾已完成的研究记录</span>
+      <ul class="check" style="margin-top:22px"><li style="font-size:26px">一句问清楚的问题</li><li style="font-size:26px">关键论断的核验记录和 3–5 篇收藏</li><li style="font-size:26px">一张矩阵、一条原文证据</li><li style="font-size:26px">一个在盯的开放问题</li></ul></div>
+    <div class="card" style="background:var(--ink);border:none"><span class="tag c">中场准备</span>
+      <ol class="steps" style="margin-top:22px"><li style="color:#e9efe9;font-size:26px">打开你常用的 Agent 客户端<small style="color:#b8c8c3">本场以 WorkBuddy 为主；其他客户端可参照安装说明</small></li><li style="color:#e9efe9;font-size:26px">下载课堂的两个 skill ZIP 包，确认电脑可运行 Python 3.10+</li><li style="color:#e9efe9;font-size:26px">登录 PaperDaily，找到「账号设置 → API Keys」</li></ol></div>
+  </div>
+  
+</section>
+
+<!-- ============ 06 你的 Agent ============ -->
+<section class="slide dark divider" data-stage="6">
+  <div class="num">06</div>
+  <div class="txt"><div class="kicker">下半场 · 你的 Agent</div><h2>研究者定方向，<br>Agent 组织行动</h2><p class="lead">让 Agent 组织约定的研究步骤，记录结果与未知，供下一轮继续使用。</p></div>
+  <div class="side"><div class="lbl">这一段你会做</div><p>接上 MCP 或 skills</p><p>写一份研究委托</p><p>验收 Agent 的研究产出</p><p>让下一次接得上</p><div class="tool">paperdaily-mcp · paperdaily-skills</div></div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">为什么要用自己的 Agent</div>
+  <h2 class="title">网页与 Agent，<br>如何协同组织研究</h2>
+  <table style="margin-top:30px">
+    <tr><th style="width:20%">研究组织</th><th style="width:36%">人在网页中操作</th><th>Agent 按目标调用基座</th></tr>
+    <tr><td>步骤安排</td><td>你选择、比较并保存材料</td><td>你给目标，Agent 拆任务并调用工具</td></tr>
+    <tr><td>材料范围</td><td>平台论文、前置分析与已存研究对象</td><td>按授权结合平台资料、网页原文、本地 PDF 与笔记</td></tr>
+    <tr><td>执行方式</td><td>按页面完成检索、阅读与记录</td><td>将检索、比较、阅读与记录组织为任务</td></tr>
+    <tr><td>研究积累</td><td>收藏、矩阵、问题与阅读记录</td><td>形成矩阵、阅读卡与核验记录，按授权保存</td></tr>
+    <tr class="hl"><td>下一轮接续</td><td>回到已存对象继续阅读与比较</td><td>读取平台及本地记录，组织下一轮任务</td></tr>
+  </table>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">分工</div>
+  <h2 class="title">四个角色，围着同一项研究</h2>
+  <div style="margin-top:34px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:auto auto auto;gap:22px 36px">
+    <div class="card" style="grid-column:1 / 4;background:var(--paper2);border:none;display:flex;align-items:center;gap:36px;padding:26px 36px">
+      <h3 style="margin:0;font-size:34px;white-space:nowrap">你 · 研究者</h3><p style="font-size:26px">定问题与方向，划定授权范围，验收每一份产出，决定理论位置和下一步</p></div>
+    <div style="grid-column:1 / 4;text-align:center;font-size:26px;color:var(--copper)">↓ 研究目标与边界　　　　　　　↑ 交回研究产出，供你验收</div>
+    <div class="card" style="border-top:6px solid var(--ink)"><span class="tag">基座</span><h3 style="margin-top:16px">知新 PaperDaily</h3><p>论文库、前置分析、日报与持续观察、收藏 · 矩阵 · 深读 · 开放问题等研究记忆</p></div>
+    <div class="card" style="border:2px solid var(--copper);background:#fbf3ee"><span class="tag c">主动窗口</span><h3 style="margin-top:16px">你的 Agent</h3><p>理解这次目标，拆成任务；通过 MCP / skills 调用基座；通过浏览器取得授权原文、读本地材料；和你深入讨论</p></div>
+    <div class="card" style="border-top:6px solid var(--ink)"><span class="tag">细读</span><h3 style="margin-top:16px">深读 RiD</h3><p>带着争点读原文与译文，留下证据与批注；读出的新疑问回到 Agent</p></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">两层能力</div>
+  <h2 class="title">MCP 与 skills：工具调用与研究流程</h2>
+  <div class="g2" style="margin-top:40px;gap:44px">
+    <div class="card"><span class="tag c">MCP · 能调用什么</span>
+      <p style="margin-top:18px;font-size:27px;color:var(--text)">让已正确配置的 MCP 客户端发现并调用 PaperDaily 工具</p>
+      <ul style="margin:18px 0 0;padding-left:30px"><li style="font-size:24px;color:var(--muted)">按 DOI 解析论文、按主题检索</li><li style="font-size:24px;color:var(--muted)">相似论文、引用关系、论文详情</li><li style="font-size:24px;color:var(--muted)">读取今天或指定日期的日报</li><li style="font-size:24px;color:var(--muted)">数据集、作者、分类等查询</li></ul></div>
+    <div class="card"><span class="tag c">skills · 怎样组织一项研究</span>
+      <p style="margin-top:18px;font-size:27px;color:var(--text)">把研究步骤写成 Agent 能照着执行的流程</p>
+      <ul style="margin:18px 0 0;padding-left:30px"><li style="font-size:24px;color:var(--muted)"><b class="mono" style="font-size:22px">paperdaily</b>：检索、查询、读详情与上下文</li><li style="font-size:24px;color:var(--muted)"><b class="mono" style="font-size:22px">paperdaily-deep-research</b>：获取 OA 或本人授权全文、逐篇精读、跨篇论断</li><li style="font-size:24px;color:var(--muted)">逐项标明全文、摘要、平台抽取或材料未知</li><li style="font-size:24px;color:var(--muted)">成果回传须你明确同意</li></ul></div>
+  </div>
+  <p class="lead" style="margin-top:40px"><b class="copper">连接成功</b>只证明工具可用；<b>研究完成</b>还要看材料深度、出处和判断——这就是验收要做的事。</p>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">怎么接入 · WorkBuddy</div>
+  <h2 class="title">在 WorkBuddy 装好两个 skills</h2>
+  <div class="g2" style="margin-top:30px;grid-template-columns:1.2fr 1fr;gap:56px">
+    <div>
+      <ol class="steps" style="margin-top:0">
+        <li style="font-size:29px">先下载两个课堂 ZIP 包<small style="font-size:23px"><a href="handouts/paperdaily.zip" download>paperdaily.zip</a> · <a href="handouts/paperdaily-deep-research.zip" download>paperdaily-deep-research.zip</a><br>每个包根目录含 SKILL.md 与完整脚本</small></li>
+        <li style="font-size:29px">添加技能 → 上传技能<small style="font-size:23px">专家·技能·连接器 → 技能 → 添加技能<br>选择 ZIP 文件，分别导入两个包</small></li>
+        <li style="font-size:29px">已安装 → 启用两项 → 新建任务<small style="font-size:23px">paperdaily 做检索与上下文<br>paperdaily-deep-research 做原文阅读与证据综合</small></li>
+      </ol>
+      <p style="font-size:23px;margin-top:24px">课前由助教检查 Python 3.10+ 与本机 key；<br><a href="WorkBuddy安装说明.md">完整安装说明与 MCP 可选路径 →</a></p>
+    </div>
+    <div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>WorkBuddy · 导入技能</span></div><img src="assets/workbuddy-import-skills.jpg" style="height:255px;object-fit:contain;object-position:center;background:#fff" alt="WorkBuddy 导入技能弹窗：选择 ZIP 文件，包内需要包含 SKILL.md"></div>
+      <div class="card" style="margin-top:24px;padding:24px 28px;border-top:5px solid var(--copper)"><h3 style="font-size:29px">先配只读 key，再验收调用</h3>
+        <p style="font-size:23px;margin-top:12px">PaperDaily「账号设置 → API Keys」：先选 <span class="mono">read:paper</span>、<span class="mono">read:digest</span>。skills 从本机 <span class="mono">~/.paperdaily-cli/env</span> 读取。</p>
+        <p style="font-size:22px;margin-top:12px">key 不贴聊天、不截图、不进 Git；已有配置先检查。MCP 已接好的同学可直接做下一页。</p></div>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide task" data-stage="6">
+  <div class="band"><div class="lbl">动手 06A</div><h2>接上 Agent，<br>做第一次调用</h2>
+    <div class="hint">暂时无法配置时<br>先用示例产出练习验收</div>
+    <div class="where">账号设置 → API Keys</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">在 WorkBuddy 做第一次调用</h2>
+    <ol class="steps" style="margin-top:30px">
+      <li>新建只读 key，并在本机安全配置<small><span class="mono">read:paper</span>、<span class="mono">read:digest</span>；skills 写入本机 env，MCP 另配连接器</small></li>
+      <li>按上一页导入两个 skills，在「已安装」启用，再新建任务</li>
+      <li>问 WorkBuddy：「确认已加载 paperdaily 与 paperdaily-deep-research；若走 MCP，列出可用工具。不要回显 key」</li>
+      <li>再问：「实际使用 paperdaily skill 或已连接 MCP，按 DOI 10.1093/qje/qjae044 查论文，报告 paper_id、版本、材料深度与调用路径」</li>
+    </ol>
+    <div class="done-box"><div class="lbl">完成标志</div><p>你已核对<b>调用记录、paper_id、版本与材料范围</b>；仅返回一个 ID 不算完成调用验收。</p></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6" style="padding-top:150px">
+  <div class="kicker">原文获取 · 研究者的授权环境</div>
+  <h2 class="title" style="font-size:60px">让 Agent 从你有权访问的网页取得原文</h2>
+  <p class="lead" style="font-size:26px">PaperDaily 定位论文，浏览器连接授权来源，skill 组织阅读；研究者核验并决定下一步。</p>
+  <div class="g2" style="margin-top:26px;grid-template-columns:1.12fr 1fr;gap:48px">
+    <div>
+      <ol class="steps">
+        <li style="font-size:27px;margin-bottom:18px">定位目标论文与版本<small style="font-size:23px">从日报或论文库确认 DOI、题名、作者与目标版本</small></li>
+        <li style="font-size:27px;margin-bottom:18px">在已授权的网页中获取原文<small style="font-size:23px">OA、作者/机构库，或本人已有访问权的出版商网页；使用已连接的浏览器，登录与验证由本人完成</small></li>
+        <li style="font-size:27px;margin-bottom:18px">核对材料，再安排阅读<small style="font-size:23px">检查版本和全文完整性，记录来源与位置；由 Agent 深读，或按授权导入 RiD</small></li>
+        <li style="font-size:27px;margin-bottom:18px">把证据带回研究问题<small style="font-size:23px">区分作者发现与自己的推断，更新判断、待核事项和下一次委托</small></li>
+      </ol>
+      <p style="font-size:23px;margin:22px 0 0;padding:16px 22px;background:var(--paper2);border-radius:12px"><b>获取不等于读过。</b>保存出处、版本、阅读范围与证据锚点；访问受阻或只有试读片段时如实记录。</p>
+    </div>
+    <div>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>WorkBuddy · 设置 → 智能体 → 浏览器操控</span></div><img src="assets/workbuddy-browser-control.png" style="height:460px;object-fit:contain;object-position:center;background:#fff" alt="2026年11月1日本机WorkBuddy 5.9.3浏览器操控Beta设置实拍，Chrome和Edge扩展均显示无法确认安装状态"></div>
+      <p class="cap" style="font-size:20px;margin-top:14px">2026-11-01 实拍 · WorkBuddy 5.9.3。入口已核实；Chrome 扩展显示“无法确认安装状态”，尚未完成机构授权原文获取实测。<br><a href="授权网页与原文获取.md">委托示例、连接检查与验收说明 →</a></p>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6" style="padding-top:150px">
+  <div class="kicker">开始研究 · 从已有起点继续</div>
+  <h2 class="title" style="font-size:60px">从一个问题，到一份可继续推进的研究记录</h2>
+  <p class="lead" style="font-size:26px">起点可以是一个现象、一篇种子论文，或已有的日报与收藏；先明确本轮目标，再按需推进。</p>
+  <div class="g3" style="margin-top:28px;gap:22px">
+    <div class="card" style="padding:24px 26px"><span class="tag c">01 · 定问题</span><h3 style="font-size:30px;margin-top:14px">明确问题与研究边界</h3><p style="font-size:24px">要描述、解释、预测还是改进什么？说明对象、情境、已有判断与本轮交付。</p></div>
+    <div class="card" style="padding:24px 26px"><span class="tag c">02 · 找材料</span><h3 style="font-size:30px;margin-top:14px">建立可追溯候选池</h3><p style="font-size:24px">解析种子论文，按主题、相似与引用扩展；保留检索条件、版本、覆盖与失败。</p></div>
+    <div class="card" style="padding:24px 26px;border-color:var(--copper)"><span class="tag c">03 · 建框架</span><h3 style="font-size:30px;margin-top:14px">按概念与争点组织</h3><p style="font-size:24px">先定每组收什么、要回答什么；逐篇归组、检查覆盖，再选择阅读材料。</p></div>
+    <div class="card" style="padding:24px 26px"><span class="tag c">04 · 取原文、读证据</span><h3 style="font-size:30px;margin-top:14px">取得授权材料并核验</h3><p style="font-size:24px">核对版本与完整性，按争点阅读；记录实际范围、位置、发现和未知项。</p></div>
+    <div class="card" style="padding:24px 26px"><span class="tag c">05 · 跨篇综合</span><h3 style="font-size:30px;margin-top:14px">比较机制、方法与边界</h3><p style="font-size:24px">将结论连回证据，区分支持、分歧与待核；核查缺的是个人理解、系统覆盖，还是研究证据。</p></div>
+    <div class="card" style="padding:24px 26px"><span class="tag c">06 · 保存、接续</span><h3 style="font-size:30px;margin-top:14px">让下一轮从已有积累开始</h3><p style="font-size:24px">保存问题、依据、判断及未解原因；读回研究记录，再结合日报安排下一项任务。</p></div>
+  </div>
+  <p style="font-size:24px;line-height:1.5;margin:24px 0 0"><b>先约定本轮做到哪一步。</b>可以只完成问题与检索方案；已有材料就从对应阶段继续。<a href="Skills研究入门与IS思想.md">分步委托与产出示例 →</a></p>
+  
+</section>
+
+<section class="slide" data-stage="6" style="padding-top:150px">
+  <div class="kicker">研究方法 · IS（Information Systems）视角</div>
+  <h2 class="title" style="font-size:60px">这套流程，可以怎样用 IS 的思想理解</h2>
+  <div class="g2" style="margin-top:32px;gap:24px">
+    <div class="card" style="padding:26px 30px"><span class="tag c">概念中心 · Concept-centric review</span><h3 style="font-size:31px;margin-top:14px">围绕同一概念，比较不同论文</h3><p style="font-size:24px">用分类框架和概念矩阵组织文献；在同一问题下核对机制、分析层次与边界。</p><p style="font-size:20px;margin-top:12px">Webster &amp; Watson · MIS Quarterly · 2002</p></div>
+    <div class="card" style="padding:26px 30px"><span class="tag c">理论目的 · Theory types</span><h3 style="font-size:31px;margin-top:14px">说清这项研究要贡献哪种认识</h3><p style="font-size:24px">区分描述、解释、预测与设计行动；围绕研究目标检查证据，不把效果差异直接当成机制。</p><p style="font-size:20px;margin-top:12px">Gregor · MIS Quarterly · 2006</p></div>
+    <div class="card" style="padding:26px 30px"><span class="tag c">知识流程 · Knowledge management</span><h3 style="font-size:31px;margin-top:14px">让保存的判断进入下一次研究</h3><p style="font-size:24px">将证据与讨论形成记录，保存、取回、交接并再应用；日报为已有问题带来新的检查机会。</p><p style="font-size:20px;margin-top:12px">Alavi &amp; Leidner · MIS Quarterly · 2001</p></div>
+    <div class="card" style="padding:26px 30px"><span class="tag c">适用质量 · Fitness for use</span><h3 style="font-size:31px;margin-top:14px">按研究用途判断材料是否够用</h3><p style="font-size:24px">查版本、完整性、情境相关性和可追溯性；检索排名、取得全文与证据支持分别核验。</p><p style="font-size:20px;margin-top:12px">Wang &amp; Strong · JMIS · 1996</p></div>
+  </div>
+  <p style="font-size:21px;line-height:1.45;margin:24px 0 0;color:var(--muted)">以上是对现有流程的学术解释；skill 未声明直接源自这些文献，相关效果也仍需研究检验。<a href="Skills研究入门与IS思想.md">来源与具体对应 →</a></p>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker"><span class="case">贯穿案例</span>一份真实委托 · 用时 16 分 42 秒</div>
+  <h2 class="title">好委托的六个部分</h2>
+  <div class="demo" style="margin-top:26px;grid-template-columns:1.25fr 1fr;gap:56px">
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>WorkBuddy · 第一轮研究委托</span></div><img src="assets/16-workbuddy-research-prompt.jpg" style="height:560px;object-fit:contain;background:#fff" alt="真实研究委托"></div>
+    <ol class="callouts" style="margin-top:0">
+      <li style="margin-bottom:18px"><b>目标与问题</b>AI 怎样影响新员工即时绩效、独立技能与协作</li>
+      <li style="margin-bottom:18px"><b>指定工具</b>实际调用 MCP 与 skill，说明每步用的是哪个</li>
+      <li style="margin-bottom:18px"><b>范围上限</b>最多 8 篇候选，选 3 篇，至少 1 篇读详情</li>
+      <li style="margin-bottom:18px"><b>交付物</b>矩阵的字段、写进哪几个文件</li>
+      <li style="margin-bottom:18px"><b>授权与操作边界</b>不收费、不上传、不分享、不改兴趣</li>
+      <li style="margin-bottom:0"><b>证据与未知项记录</b>当前材料无法确认的内容写“未知”；分开作者结果与自己的推断</li>
+    </ol>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker"><span class="case">贯穿案例</span>第一轮：它实际做了什么</div>
+  <h2 class="title">从一个 DOI 出发，交回一张矩阵和一个可反驳问题</h2>
+  <div class="row" style="margin-top:36px;gap:22px;align-items:stretch">
+    <div class="card" style="flex:1;padding:26px"><span class="tag">1 · 解析</span><p style="margin-top:14px;font-size:24px;color:var(--text)">按 DOI 找到锚点论文，核对正式版与工作论文</p></div>
+    <div class="card" style="flex:1;padding:26px"><span class="tag">2 · 检索</span><p style="margin-top:14px;font-size:24px;color:var(--text)">按主题检索——噪声多</p></div>
+    <div class="card" style="flex:1;padding:26px;border-color:var(--copper)"><span class="tag c">3 · 调整检索路径</span><p style="margin-top:14px;font-size:24px;color:var(--text)">转向锚点论文的相似论文与引用关系</p></div>
+    <div class="card" style="flex:1;padding:26px"><span class="tag">4 · 比较</span><p style="margin-top:14px;font-size:24px;color:var(--text)">1 篇锚点 + 3 篇相关，读详情，填矩阵</p></div>
+    <div class="card" style="flex:1;padding:26px"><span class="tag">5 · 推进</span><p style="margin-top:14px;font-size:24px;color:var(--text)">两种待检验机制 + 一个可反驳问题</p></div>
+  </div>
+  <div class="g2" style="margin-top:36px;gap:40px">
+    <div class="card" style="background:var(--paper2);border:none"><span class="tag c">机制 A · 理解与练习</span><p style="margin-top:14px;font-size:25px;color:var(--text)">AI 提供可理解的反馈，员工保留主动练习机会，可能促进技能保持与迁移。</p></div>
+    <div class="card" style="background:var(--paper2);border:none"><span class="tag c">机制 B · 执行与验证</span><p style="margin-top:14px;font-size:25px;color:var(--text)">更多步骤交给 Agent 后，人的练习、监督与核验可能重新分配，影响仍需检验。</p></div>
+  </div>
+  <p class="lead" style="margin-top:30px;font-size:27px">在明确条件下提出<b>可区分、可检验的预测</b>：两条路径是否并存，何时占主导，需要证据判断。</p>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">验收</div>
+  <h2 class="title">Agent 交回的是草稿，验收是你的工作</h2>
+  <div class="g2" style="margin-top:32px;grid-template-columns:1.15fr 1fr;gap:56px">
+    <div>
+      <p class="muted" style="font-size:22px;letter-spacing:.14em;font-weight:600;margin:0 0 14px">实测中真的发生过</p>
+      <table>
+        <tr><td style="width:30%">超出范围</td><td>约定最多 8 篇候选；实际相似检索取了 15 篇、引用取了 25 条</td></tr>
+        <tr><td>说过头</td><td>“作者均未正面检验撤去 AI 后的独立绩效”——第二轮读原文被推翻</td></tr>
+        <tr><td>数错了</td><td>日报案例把两个列表的论文混算，后按原始字段改正</td></tr>
+        <tr><td>概念混用</td><td>把“即时写作绩效”说成“撤去 AI 后的独立技能”，中途被拉回</td></tr>
+      </table>
+    </div>
+    <div class="card" style="background:var(--ink);border:none">
+      <h3 style="color:#fff;font-size:32px">验收四问</h3>
+      <ol class="steps" style="margin-top:20px">
+        <li style="color:#e9efe9;font-size:27px">这是哪篇、哪个版本？<small style="color:#b8c8c3">工作论文与正式版不混用</small></li>
+        <li style="color:#e9efe9;font-size:27px">这些结果真的可比吗？<small style="color:#b8c8c3">对象、指标、时点是否一致</small></li>
+        <li style="color:#e9efe9;font-size:27px">这条论断的出处在哪？<small style="color:#b8c8c3">全文、摘要，还是它的推断</small></li>
+        <li style="color:#e9efe9;font-size:27px">预测能被推翻吗？<small style="color:#b8c8c3">什么结果会让这条机制不成立</small></li>
+      </ol>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker"><span class="case">贯穿案例</span>第二轮：带着争点接着做</div>
+  <h2 class="title">第二轮不必重讲背景，<br>直接问：上一轮哪个格子要改？</h2>
+  <div class="row" style="margin-top:40px;gap:0;align-items:stretch">
+    <div class="card" style="flex:1"><span class="tag">第一轮留下</span><p style="margin-top:14px;font-size:24px;color:var(--text)"><span class="mono" style="font-size:21px">comparison.md</span><br><span class="mono" style="font-size:21px">next-question.md</span></p><p style="margin-top:10px;font-size:22px">争点：作者到底有没有检验撤去 AI 后的表现？</p></div>
+    <div style="display:grid;place-items:center;width:70px;font-size:44px;color:var(--copper)">→</div>
+    <div class="card" style="flex:1.15;border-color:var(--copper)"><span class="tag c">第二轮委托</span><p style="margin-top:14px;font-size:22px">读第一轮的矩阵和下一问；只核一个争点；取一篇公开全文，只读学习 / 中断附近两个小节；记下版本、页码、阅读范围</p></div>
+    <div style="display:grid;place-items:center;width:70px;font-size:44px;color:var(--copper)">→</div>
+    <div class="card" style="flex:1;background:var(--ink);border:none"><span class="tag c">结果</span><p style="margin-top:14px;font-size:24px;color:#fff">arXiv v2 §5.2 已有中断期表现分析——第一轮的判断被修订</p><p style="margin-top:10px;font-size:21px;color:#b8c8c3"><span class="mono">verification.md</span></p></div>
+    <div style="display:grid;place-items:center;width:70px;font-size:44px;color:var(--copper)">→</div>
+    <div class="card" style="flex:1"><span class="tag">第三轮复用</span><p style="margin-top:14px;font-size:22px">日报深析直接读入这份核验记录，不再重做</p></div>
+  </div>
+  <p class="lead" style="margin-top:44px">这就是“研究记忆”最直观的样子：<b>每一轮留下文件，下一轮从文件开始。</b>上半场第24页的修订，就是 Agent 在这一轮完成的。</p>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker"><span class="case">贯穿案例</span>日报深析</div>
+  <h2 class="title">每天的日报，交给 Agent 接回你的研究</h2>
+  <div class="demo" style="margin-top:26px;grid-template-columns:1fr 1.1fr;gap:48px">
+    <div class="card" style="background:var(--card);padding:30px 34px">
+      <span class="tag c">委托模板 · 可直接抄</span>
+      <p style="margin-top:16px;font-size:23px;line-height:1.75;color:var(--text)">先读回上轮问题、证据、判断和未解原因，再读指定日期日报，说明范围与实际读取状态。选最多 3 篇，回论文库核对详情、版本和历史研究。<br>检查新材料补充了个人理解、暴露了系统遗漏或概括偏差，还是留下待补查的研究问题；不能判断就保留待核。<br>交付比较矩阵、证据与待核事项、阅读卡和下一任务；不为凑“研究空白”下结论。<br>未经授权不上传、不分享、不改兴趣、不启动收费综述。</p>
+    </div>
+    <div class="shot"><div class="bar"><i></i><i></i><i></i><span>WorkBuddy · 日报深析产出</span></div><img src="assets/06-workbuddy-daily.jpg" style="height:560px" alt="日报深析的执行与产出文件"></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker"><span class="case">贯穿案例</span>它交回了什么</div>
+  <h2 class="title">日报深析的四类研究产出</h2>
+  <div class="g2" style="margin-top:20px;gap:24px 36px">
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>比较矩阵</span></div><img src="assets/14-workbuddy-matrix-full.jpg" style="height:196px" alt="操作截图：14-workbuddy-matrix-full"></div><p class="cap" style="margin-top:10px">四篇：两篇测机器、两篇测人——比较断点（第21页）</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>机制与候选问题</span></div><img src="assets/13-workbuddy-report-full.jpg" style="height:196px" alt="操作截图：13-workbuddy-report-full"></div><p class="cap" style="margin-top:10px">从“给建议”到“替你执行”，员工学习的条件会改变吗？</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>RiD 阅读卡</span></div><img src="assets/15-workbuddy-rid-reading-cards.jpg" style="height:196px" alt="操作截图：15-workbuddy-rid-reading-cards"></div><p class="cap" style="margin-top:10px">两张卡：读哪里、核对什么、留下哪些证据</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>来源台账与执行记录</span></div><img src="assets/17-workbuddy-mcp-receipt.jpg" style="height:196px;object-fit:contain;background:#fff" alt="操作截图：17-workbuddy-mcp-receipt"></div><p class="cap" style="margin-top:10px">每条材料从哪来、读到多深、哪些没做</p></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">交接 · 按本次阅读目标选择路径</div>
+  <h2 class="title" style="font-size:60px">阅读任务的两条路径：RiD 与本地 Agent</h2>
+  <p class="lead" style="font-size:25px">研究者在 RiD 细读与留证；本地 Agent 可另行执行深读任务。完成后都由你核对并交接记录。</p>
+  <div class="g2" style="margin-top:24px;grid-template-columns:1.15fr 1fr;gap:44px">
+    <div class="card" style="border-left:6px solid var(--copper);padding:26px 30px">
+      <span class="tag c">路径一 · 在 RiD 细读</span>
+      <h3 style="margin-top:16px;font-size:29px">阅读卡：作者如何解释员工学习？</h3>
+      <p style="font-size:23px;margin-bottom:14px">将问题带入「带着问题读」，核对版本，细读相关段落并记录理解。</p>
+      <table style="font-size:22px">
+        <tr><td style="width:23%">材料</td><td>Generative AI at Work；区分正式版与 arXiv v2</td></tr>
+        <tr><td>读哪里</td><td>学习、经验曲线、中断期分析及相关局限</td></tr>
+        <tr><td>核对什么</td><td>当期辅助、人的能力变化与识别边界</td></tr>
+        <tr><td>带回什么</td><td>版本、位置、证据与解释、下一项任务</td></tr>
+      </table>
+      <p style="font-size:21px;margin-top:16px">按本人授权将摘录与判断交给 Agent，继续比较和分析。</p>
+    </div>
+    <div>
+      <span class="tag c" style="margin-bottom:14px">路径二 · 本地 Agent 深读与回传</span>
+      <div class="shot"><div class="bar"><i></i><i></i><i></i><span>PaperDaily · 转给 Agent 深读</span></div><img src="assets/22-main-agent-supplement-entry.jpg" style="height:185px;object-fit:contain;background:#fff" alt="PaperDaily论文详情页的本地Agent深读任务入口"></div>
+      <p class="cap" style="margin-bottom:18px">此路径的原始 PDF 留在本地；成果按授权回传主站。</p>
+      <ul class="check"><li style="font-size:23px">复制「转给 Agent 深读」命令，或加入任务收件箱</li><li style="font-size:23px">Agent 可从已授权网页或本地取得原文，执行并交回产出</li><li style="font-size:23px">你同意后回传，在主站「综述与深读 → 深读」回看</li></ul>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">研究记忆</div>
+  <h2 class="title">每轮结束，让 Agent 写一份研究记录</h2>
+  <div class="g2" style="margin-top:32px;grid-template-columns:1fr 1.1fr;gap:56px">
+    <div class="card" style="background:var(--ink);border:none">
+      <span class="tag c">每轮保存的五项记录</span>
+      <ol class="steps" style="margin-top:22px">
+        <li style="color:#e9efe9;font-size:27px">当前问题</li>
+        <li style="color:#e9efe9;font-size:27px">已确认或需修订的判断</li>
+        <li style="color:#e9efe9;font-size:27px">依据与版本</li>
+        <li style="color:#e9efe9;font-size:27px">仍待核验：未解原因与范围</li>
+        <li style="color:#e9efe9;font-size:27px">下一项最小任务</li>
+      </ol>
+    </div>
+    <div>
+      <table>
+        <tr><th style="width:34%">记忆存在哪</th><th>下一次怎样取回</th></tr>
+        <tr><td>你本地的研究包</td><td>矩阵、下一问、核验记录：让 Agent 先读这些文件</td></tr>
+        <tr><td>PaperDaily 平台</td><td>已存研究对象：按已开放接口和 key 权限读取；不支持的内容另行交接</td></tr>
+        <tr><td>深读 RiD</td><td>问题、证据与批注：读完带回 Agent</td></tr>
+        <tr><td>日报</td><td>持续查看新线索；是否生成与命中，需核对实际状态</td></tr>
+      </table>
+      <p class="muted" style="font-size:22px;margin-top:22px">记下“上次为什么没回答”，让新日报与下一次委托接着查。</p>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide task" data-stage="6">
+  <div class="band"><div class="lbl">动手 06B</div><h2>委托一次，<br>验收一次</h2>
+    <div class="hint">研究者负责委托与验收<br>Agent 执行任务并交回产出</div>
+    <div class="where">你的 Agent + 今天的日报</div></div>
+  <div class="body">
+    <h2 class="title" style="font-size:52px">向你的 Agent 委托，并验收产出</h2>
+    <ol class="steps" style="margin-top:26px">
+      <li>用模板写委托：日报（个人或公开示范）+ 你上半场收藏的 2 篇<small>写清范围上限、材料深度、交付文件、授权与操作边界、未知写未知</small></li>
+      <li>发给自己的 Agent；执行期间，按委托准备验收清单</li>
+      <li>收到产出后，用四问逐条核对来源与证据，标明已确认、待补核或需修订的内容</li>
+      <li>把验收意见交给 Agent 修订，复核后确认，并保存“五行研究记录”</li>
+    </ol>
+    <div class="done-box"><div class="lbl">完成标志</div><p>你有<b>一张矩阵、一张阅读卡和一份五行研究记录</b>，并记录已确认内容、待核验事项与下一步行动。</p></div>
+  </div>
+  
+</section>
+
+<section class="slide" data-stage="6">
+  <div class="kicker">研究团队协作</div>
+  <h2 class="title">研究团队如何协同使用 Agent</h2>
+  <div class="g3" style="margin-top:40px">
+    <div class="card"><span class="tag c">材料整理</span><h3 style="margin-top:18px">整理</h3><p>候选、矩阵、证据与未知；按约定交回研究记录</p></div>
+    <div class="card"><span class="tag c">方法复核</span><h3 style="margin-top:18px">挑战</h3><p>复核版本与出处，提出竞争解释、设计与识别问题</p></div>
+    <div class="card"><span class="tag c">研究决策</span><h3 style="margin-top:18px">判断</h3><p>理论位置、识别策略、下一项最值得做的检验</p></div>
+  </div>
+  <div class="card" style="margin-top:36px;background:var(--paper2);border:none">
+    <p style="font-size:27px;color:var(--text)"><b>组内共读（深读 RiD）：</b>发起人选择论文、设置引导问题与截止时间；成员带着问题阅读、记录证据，可设为提交后再查看他人批注。团队围绕同一份材料核对理解与解释。</p>
+  </div>
+  <p class="muted" style="font-size:22px;margin-top:22px">共享只针对你明确授权交接的研究对象。</p>
+  
+</section>
+
+<!-- ============ 收尾 ============ -->
+<section class="slide" data-stage="7">
+  <div class="kicker">收尾 · 研究推进卡</div>
+  <h2 class="title">把今天写进一张卡，下次从这里继续</h2>
+  <table style="margin-top:20px;font-size:23px">
+    <tr><th style="width:22%">栏目</th><th style="width:40%">案例示范</th><th>你的</th></tr>
+    <tr><td>我的问题</td><td>引导式 AI 是否改善新员工撤辅后的独立表现？</td><td></td></tr>
+    <tr><td>已有判断</td><td>短期提效有证据；长期独立表现未定</td><td></td></tr>
+    <tr><td>新线索</td><td>Agent 从“给建议”到“执行任务”</td><td></td></tr>
+    <tr><td>比较断点</td><td>技术指标与人的结果不可直接比</td><td></td></tr>
+    <tr class="hl"><td>读后修订</td><td>不能再说“原文没检验撤辅表现”（v2 §5.2）</td><td></td></tr>
+    <tr><td>下一项最小任务</td><td>核对 QJE 正式版是否保留这组分析</td><td></td></tr>
+    <tr><td>交给 Agent 的委托</td><td>读本卡与 verification.md，只核正式版对应段落</td><td></td></tr>
+  </table>
+  
+</section>
+
+<section class="slide" data-stage="7">
+  <div class="row" style="align-items:center;gap:80px">
+    <div style="flex:1.1">
+      <div class="kicker">之后怎么用</div>
+      <h2 class="title">每天关注更新，每周回顾研究进展</h2>
+      <div class="g2" style="margin-top:40px;gap:28px">
+        <div class="card"><span class="tag c">每天</span><h3 style="margin-top:18px">看一眼日报</h3><p>挑一条与旧问题相关的线索，保存或标不相关；值得深挖的交给 Agent</p></div>
+        <div class="card"><span class="tag c">每周</span><h3 style="margin-top:18px">推进一项</h3><p>让 Agent 深析一次日报，选一张阅读卡去 RiD 读，再让它更新研究记录</p></div>
+      </div>
+      <p class="lead" style="margin-top:40px">每周回顾：<b>哪些判断得到支持或修订，哪些未知更清楚，下一步如何推进。</b></p>
+    </div>
+    <div class="loop" style="width:640px;height:640px;transform:scale(.92)">
+      <svg viewBox="0 0 640 640"><defs><marker id="ah2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b36542"/></marker></defs>
+        <circle cx="320" cy="320" r="230" fill="none" stroke="#b36542" stroke-width="3" stroke-dasharray="6 10"/>
+        <path d="M470 146 A230 230 0 0 1 540 250" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah2)"/>
+        <path d="M170 494 A230 230 0 0 1 100 390" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#ah2)"/>
+      </svg>
+      <div class="node" style="left:320px;top:90px;width:220px"><div class="dot" style="width:96px;height:96px;font-size:28px">问</div></div>
+      <div class="node" style="left:550px;top:320px;width:220px"><div class="dot" style="width:96px;height:96px;font-size:28px">比</div></div>
+      <div class="node" style="left:320px;top:550px;width:220px"><div class="dot" style="width:96px;height:96px;font-size:28px">读</div></div>
+      <div class="node c" style="left:90px;top:320px;width:220px"><div class="dot" style="width:96px;height:96px;font-size:28px">跟</div></div>
+      <div class="center" style="font-size:28px">问题、证据<br>与下一步</div>
+    </div>
+  </div>
+  
+</section>
+
+<section class="slide dark cover" data-stage="7">
+  <div class="orbit"></div>
+  <div class="inner">
+    <div class="kicker" style="color:var(--copper-l)">资源 · 答疑</div>
+    <h1 style="font-size:88px">今天的问题，<br>明天<span>接着做</span>。</h1>
+    <div class="g3" style="margin-top:70px;gap:56px;color:#dfe8e4">
+      <div><div class="tag c">入口</div><p style="font-family:var(--mono);font-size:25px;margin-top:16px;line-height:1.9">ask.paperdaily.org<br>paperdaily.org<br>read.paperdaily.org</p></div>
+      <div><div class="tag c">帮助中心</div><p style="font-size:25px;margin-top:16px;line-height:1.9">paperdaily.org/help<br>第一次使用 · 开放问题<br>连接 MCP · 安装 skills<br><span class="mono" style="font-size:21px">github.com/alonegg/paperdaily-skills</span></p></div>
+      <div><div class="tag c">学校邮箱权益</div><p style="font-size:25px;margin-top:16px;line-height:1.9">机构邮箱验证<br>有效资格每日 300 积分<br>以账号权益与期限为准</p></div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- ============ 附录 ============ -->
+<section class="slide" data-stage="8">
+  <div class="kicker">附录 A · 现场备用</div>
+  <h2 class="title">出状况时怎么办</h2>
+  <table style="margin-top:30px">
+    <tr><th style="width:26%">情况</th><th>处理</th></tr>
+    <tr><td>验证邮件没到</td><td>先跟着公开示范看；检查垃圾邮件；仍未收到时请助教协助</td></tr>
+    <tr><td>网络慢 / 综述生成久</td><td>讲者切到附录截图；学员先看文献栏，不要重复提交</td></tr>
+    <tr><td>积分不足</td><td>看「积分」页流水与恢复时间；矩阵免费，可先做第三段</td></tr>
+    <tr><td>论文没有全文</td><td>按实际材料记录：摘要、平台抽取或未知；通过已授权网页、OA或本人提供的本地文件获取原文</td></tr>
+    <tr><td>日报还没有个人内容</td><td>先用公开示范；核对雷达准入、兴趣保存与生成状态，再检查后续报告</td></tr>
+    <tr><td>Agent 现场没返回</td><td>根据现场进度切换到已准备的产出截图</td></tr>
+  </table>
+  
+</section>
+
+<section class="slide" data-stage="8">
+  <div class="kicker">附录 B · 两条可并存的机制（待检验）</div>
+  <h2 class="title">AI 接管更多执行后，员工学的是什么？</h2>
+  <div class="g2" style="margin-top:40px">
+    <div class="card"><span class="tag c">理解与练习路径</span><p style="margin-top:18px;font-size:27px;color:var(--text)">AI 给出可理解的反馈，员工仍有主动尝试的机会 → 可能促进保持与迁移。</p><p style="margin-top:16px">要观察：参与、练习、反馈、撤辅后表现</p></div>
+    <div class="card"><span class="tag c">执行与验证路径</span><p style="margin-top:18px;font-size:27px;color:var(--text)">更多任务交给 Agent → 人转向监督、核验、返工 → 学习内容与负担改变。</p><p style="margin-top:16px">要观察：核验时间、返工率、任务可验证性</p></div>
+  </div>
+  <div class="card" style="margin-top:40px;background:var(--ink);border:none"><p style="color:#e9efe9;font-size:28px">候选问题：相比建议式 AI，可执行多步骤任务的 Agent 是否改变绩效收益、人工核验负担与撤辅后的技能保持？<br><span style="color:var(--copper-l)">尚需系统查新、明确构念、数据与识别设计。</span></p></div>
+  
+</section>
+
+<section class="slide" data-stage="8">
+  <div class="kicker">附录 C · 更多界面</div>
+  <h2 class="title">前置分析、数据线索与阅读面板</h2>
+  <div class="g3" style="margin-top:34px;gap:30px">
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>论文详情 · 前置分析</span></div><img src="assets/24-main-preanalysis.jpg" style="height:300px" alt="操作截图：24-main-preanalysis"></div><p class="cap">方法、数据与未解问题；缺失字段保留为待核</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>数据集地图</span></div><img src="assets/29-main-dataset-map.jpg" style="height:300px" alt="操作截图：29-main-dataset-map"></div><p class="cap">从研究问题反查别人用过什么数据</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>深读 · 分析面板</span></div><img src="assets/19-rid-analysis-panel.jpg" style="height:300px" alt="RiD论文分析面板"></div><p class="cap">分析先标明自己的材料边界</p></div>
+  </div>
+  <div class="g3" style="margin-top:34px;gap:30px">
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>日报总览</span></div><img src="assets/01-daily-overview.jpg" style="height:150px" alt="2026年10月31日公开示范日报总览"></div></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>横向比较</span></div><img src="assets/07-workbench-comparison.jpg" style="height:150px" alt="PaperDaily工作台论文横向比较界面"></div></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>Agent 报告</span></div><img src="assets/13-workbuddy-report-full.jpg" style="height:150px" alt="操作截图：13-workbuddy-report-full"></div></div>
+  </div>
+  
+</section>
+
+</div>
+
+<div id="drawer"></div>
+<div id="pv"><div class="clock" id="clock">00:00 <small id="reset">重置</small></div><div class="next" id="next"></div><div class="pn" id="pnotes"></div></div>
+<div id="pbottom"></div>
+<div id="help">← → 翻页 · O 概览 · N 备注 · P 演讲者视图 · F 全屏</div>
+
+<script>
+(() => {
+  const STAGES = ['问清楚','找答案','比一比','读原文','跟进展','你的 Agent'];
+  const deck = document.getElementById('deck');
+  const slides = [...document.querySelectorAll('.slide')];
+  const N = slides.length;
+  const presenter = new URLSearchParams(location.search).has('presenter');
+  const ch = 'BroadcastChannel' in window ? new BroadcastChannel('pd-workshop') : null;
+  let cur = 0;
+
+  // 页眉与页脚
+  slides.forEach((s, i) => {
+    const st = +s.dataset.stage;
+    const dark = s.classList.contains('dark');
+    if (!dark) {
+      const c = document.createElement('div'); c.className = 'chrome';
+      const track = st >= 1 && st <= 6 ? STAGES.map((n, k) =>
+        `<span class="${k + 1 < st ? 'done' : k + 1 === st ? 'now' : ''}"><em>0${k + 1}</em>${n}</span>`).join('') :
+        `<span class="now">${({7:'收尾',8:'附录',9:'中场'})[st] || '开场'}</span>`;
+      c.innerHTML = `<div class="brand"><div class="mark">知</div><b>知新 PaperDaily</b><small>研究工作坊</small></div><div class="track">${track}</div>`;
+      s.prepend(c);
+    }
+    const f = document.createElement('div'); f.className = 'foot';
+    f.innerHTML = `<span>${dark ? '' : '知新 PaperDaily · 科研外脑工作坊'}</span><span class="pg">${String(i + 1).padStart(2, '0')} / ${N}</span>`;
+    s.append(f);
+  });
+
+  const notesOf = i => (slides[i].querySelector('.notes')?.textContent || '').trim();
+  const titleOf = i => (slides[i].querySelector('h1,h2')?.textContent || '').replace(/\s+/g, ' ').trim();
+
+  function fit() {
+    const r = deck.getBoundingClientRect();
+    deck.style.setProperty('--s', Math.min(r.width / 1920, r.height / 1080));
+  }
+  function go(i, broadcast = true) {
+    cur = Math.max(0, Math.min(N - 1, i));
+    slides.forEach((s, k) => s.classList.toggle('active', k === cur));
+    history.replaceState(null, '', location.pathname + location.search + '#' + (cur + 1));
+    document.getElementById('drawer').textContent = `${cur + 1}. ${titleOf(cur)}\n\n${notesOf(cur)}`;
+    if (presenter) {
+      document.getElementById('pnotes').textContent = notesOf(cur) || '（无备注）';
+      document.getElementById('next').innerHTML = cur + 1 < N ? `下一页 ${cur + 2}/${N}<b>${titleOf(cur + 1)}</b>` : '最后一页';
+      document.getElementById('pbottom').textContent = `当前 ${cur + 1}/${N} · ${titleOf(cur)}`;
+    }
+    if (broadcast && ch) ch.postMessage({ go: cur });
+    if (document.body.classList.contains('overview')) slides[cur].scrollIntoView({ block: 'nearest' });
+  }
+  ch && (ch.onmessage = e => {
+    if (typeof e.data.go === 'number') go(e.data.go, false);
+  });
+
+  const fmt = s => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+
+  // 键盘与点击
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); go(cur - 1); }
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(N - 1);
+    else if (k === 'o' || k === 'O') { document.body.classList.toggle('overview'); fit(); go(cur, false); }
+    else if (k === 'Escape') { document.body.classList.remove('overview', 'show-notes'); fit(); }
+    else if (k === 'n' || k === 'N') document.body.classList.toggle('show-notes');
+    else if (k === 'f' || k === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    else if (k === 'p' || k === 'P') window.open(location.pathname + '?presenter#' + (cur + 1), 'pd-presenter', 'width=1400,height=860');
+  });
+  slides.forEach((s, i) => s.addEventListener('click', () => {
+    if (document.body.classList.contains('overview')) { document.body.classList.remove('overview'); fit(); go(i); }
+  }));
+
+  // 演讲者视图时钟
+  if (presenter) {
+    document.body.classList.add('presenter');
+    let t0 = Date.now();
+    document.getElementById('reset').onclick = () => (t0 = Date.now());
+    setInterval(() => { document.getElementById('clock').firstChild.nodeValue = fmt(Math.floor((Date.now() - t0) / 1000)) + ' '; }, 1000);
+  }
+
+  setTimeout(() => document.getElementById('help').classList.add('hide'), 6000);
+  addEventListener('resize', fit);
+  fit();
+  go((parseInt(location.hash.slice(1)) || 1) - 1, false);
+})();
+</script>
+</body>
+</html>
