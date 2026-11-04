@@ -18,13 +18,15 @@ def export(source,target):
     files += [source/'workshop'/n for n in DOCS]
     files += list((source/'workshop/assets').rglob('*'))+list((source/'poster/assets').rglob('*'))
     files += [source/'workshop/handouts'/n for n in ('paperdaily.zip','paperdaily-deep-research.zip')]
+    if (source/'video/output/PaperDaily-workshop.mp4').exists():
+        files += [source/'video/output'/n for n in ('PaperDaily-workshop.mp4','index.html','poster.png','workshop.srt','workshop.vtt','chapters.json','script.md')]
     selected={}
     for p in files:
         if p.is_dir():continue
         if p.is_symlink() or not p.is_file():raise ValueError('Missing file or symlink in allowlist')
-        if p.suffix.lower() not in {'.html','.json','.md','.jpg','.jpeg','.png','.svg','.woff2','.txt','.zip'}:raise ValueError('Unsupported asset')
+        if p.suffix.lower() not in {'.html','.json','.md','.jpg','.jpeg','.png','.svg','.woff2','.txt','.zip','.mp4','.vtt','.srt'}:raise ValueError('Unsupported asset')
         name=str(p.relative_to(source));data=p.read_bytes()
-        if p.suffix in {'.html','.json','.md','.svg','.txt'}:
+        if p.suffix in {'.html','.json','.md','.svg','.txt','.vtt','.srt'}:
             text=data.decode('utf-8').replace('\r\n','\n').replace('\r','\n')
             if p.suffix=='.txt':text='\n'.join(line.rstrip() for line in text.splitlines())+'\n'
             if name=='workshop/index.html':text=re.sub(r'<aside\b[^>]*class="notes"[^>]*>.*?</aside>','',text,flags=re.S)

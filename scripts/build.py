@@ -14,6 +14,7 @@ OUT.mkdir()
 for folder in ['workshop/assets','workshop/handouts','poster']:
     shutil.copytree(CONTENT/folder,OUT/folder)
 shutil.copy2(ROOT/'site/style.css',OUT/'style.css')
+if (CONTENT/'video/output').exists():shutil.copytree(CONTENT/'video/output',OUT/'video')
 manifest=json.loads((CONTENT/'manifest.json').read_text());pkg=json.loads((CONTENT/'workshop/handouts/manifest.json').read_text())
 versions={p['skill']:p['version'] for p in pkg['packages']}
 nav='''<header class="nav"><div class="wrap"><a class="brand" href="/"><img src="/workshop/assets/paperdaily-mark.svg" alt="">知新 PaperDaily</a><nav class="links" aria-label="主导航"><a href="/prepare/">会前准备</a><a href="/#downloads">Skills下载</a><a href="/workshop/">讲解课件</a><a href="/poster/">海报</a></nav></div></header>'''
