@@ -19,7 +19,7 @@ def export(source,target):
     files += list((source/'workshop/assets').rglob('*'))+list((source/'poster/assets').rglob('*'))
     files += [source/'workshop/handouts'/n for n in ('paperdaily.zip','paperdaily-deep-research.zip')]
     if (source/'video/output/PaperDaily-workshop.mp4').exists():
-        files += [source/'video/output'/n for n in ('PaperDaily-workshop.mp4','index.html','poster.png','workshop.srt','workshop.vtt','chapters.json','script.md')]
+        files += [source/'video/output'/n for n in ('PaperDaily-workshop.mp4','index.html','poster.png','workshop.srt','workshop.vtt','chapters.json')]
     selected={}
     for p in files:
         if p.is_dir():continue
