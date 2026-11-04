@@ -17,4 +17,10 @@ for path in ['/','/prepare/','/poster/','/workshop/']:
 for pkg in expected['skill_packages']:
     body=get('/workshop/handouts/'+pkg['file'])
     assert hashlib.sha256(body).hexdigest()==pkg['sha256'],pkg['file']
-print(json.dumps({'canonical_https':'passed','source_sha':actual['source_sha'],'site_sha':actual['site_sha'],'full_download_hashes':'passed'}))
+video_path=ROOT/'dist/video/PaperDaily-workshop.mp4'
+video_sha=None
+if video_path.exists():
+    video_body=get('/video/PaperDaily-workshop.mp4')
+    video_sha=hashlib.sha256(video_body).hexdigest()
+    assert video_sha==hashlib.sha256(video_path.read_bytes()).hexdigest(),'Public video hash mismatch'
+print(json.dumps({'canonical_https':'passed','source_sha':actual['source_sha'],'site_sha':actual['site_sha'],'full_download_hashes':'passed','video_sha256':video_sha}))
