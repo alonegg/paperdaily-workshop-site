@@ -201,6 +201,25 @@ tr.hl td{background:#f3e3d8}
 .code{font-family:var(--mono);font-size:24px;background:#1b2b29;color:#dfe8e4;border-radius:14px;padding:24px 28px;line-height:1.6;white-space:pre}
 .code .cm{color:#86a39c}
 
+/* Self-contained concept animation; no external assets or numerical claims. */
+.knowledge-flow-slide .kicker{margin-bottom:14px}
+.kf-layout{display:grid;grid-template-columns:1120px 1fr;gap:28px;height:610px;margin-top:16px}
+.kf-diagram{width:1120px;height:610px}.kf-diagram svg{display:block;width:100%;height:100%;overflow:visible}
+.kf-svg-heading{font:400 31px var(--display);fill:var(--ink)}.kf-svg-small{font:21px var(--sans);fill:var(--muted)}
+.kf-side{padding-top:6px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.kf-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:42px}
+.kf-badge{color:var(--muted);font-size:19px;margin-right:auto}
+.kf-controls button{appearance:none;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:21px var(--sans);padding:8px 13px;cursor:pointer}
+.kf-controls button:hover{border-color:var(--copper);color:var(--copper)}.kf-controls button:focus-visible{outline:3px solid var(--copper);outline-offset:4px}
+.kf-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.kf-steps li{display:flex;gap:14px;padding:11px 14px;border:1px solid var(--line);border-radius:13px;background:var(--card);opacity:.5;transition:opacity .4s,border-color .4s,background .4s}
+.kf-steps li.is-reached{opacity:.8}.kf-steps li.is-current{opacity:1;border-color:var(--copper);background:#fbf3ee}
+.kf-steps li>span{font:23px var(--mono);color:var(--copper);padding-top:3px}.kf-steps h3{font:600 25px var(--serif);margin:0 0 5px}.kf-steps p{font:20px/1.4 var(--sans);color:var(--muted);margin:0}
+.kf-status{font:22px/1.5 var(--sans);color:var(--ink2);padding:10px 0 0;border-top:1px solid var(--line)}
+.kf-disclaimer{font:18px/1.4 var(--sans);color:var(--muted);margin:10px 0 0}
+@media(prefers-reduced-motion:reduce){.kf-steps li{transition:none}}
+@media print{.kf-controls button{display:none}.kf-steps li{opacity:1}}
+
 /* ---------- 讲者备注抽屉 / 概览 / 演讲者视图 ---------- */
 #drawer{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;background:rgba(14,25,24,.96);color:#e6ece9;
   font:16px/1.75 var(--sans);padding:18px 28px;display:none;white-space:pre-wrap;z-index:5;border-top:2px solid var(--copper)}
@@ -306,6 +325,61 @@ body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom
   <div style="margin-top:30px;padding:22px 30px;background:var(--ink);border-radius:16px;color:#f6f5ef;font-size:27px;line-height:1.5">PaperDaily 的努力方向：让个人理解接上已有研究，让系统覆盖持续贴近研究现状。</div>
   <p style="font-size:22px;line-height:1.45;margin:18px 0 0;color:var(--muted)">三类缺口可并存，尚不能判断时保留“待核”；“没搜到”不能直接写成“无人研究”。<a href="三类缺口与科研外脑.md">案例、记录与委托 →</a></p>
   
+</section>
+
+<section class="slide knowledge-flow-slide" data-stage="0" style="padding-top:146px">
+  <div class="kicker">科研外脑的价值 · 持续对齐</div>
+  <h2 class="title" style="font-size:58px;margin-bottom:12px">研究在增长，系统在追赶，个人在理解</h2>
+  <p class="lead" style="font-size:27px;line-height:1.5">把每天出现的新论文，逐步接回自己的研究问题。</p>
+  <div class="kf-layout" data-knowledge-flow>
+    <div class="kf-diagram">
+      <svg viewBox="0 0 1120 610" role="img" aria-labelledby="kf-title kf-description">
+        <title id="kf-title">研究集合、PaperDaily与个人认知圈的动态示意</title>
+        <desc id="kf-description">社会研究集合不断扩展，PaperDaily纳入新论文并分类链接为图谱，再经日报、Agent与原文阅读，把研究线索转为个人理解。此图不表示真实覆盖率或严格集合包含关系。</desc>
+        <defs>
+          <radialGradient id="kf-world-fill"><stop offset="0" stop-color="#efede3"/><stop offset="1" stop-color="#dfe8df" stop-opacity=".6"/></radialGradient>
+          <marker id="kf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b36542"/></marker>
+        </defs>
+        <circle data-kf-world-halo cx="440" cy="300" r="246" fill="none" stroke="#c4cfcb" stroke-width="2" stroke-dasharray="4 9"/>
+        <circle data-kf-world cx="440" cy="300" r="235" fill="url(#kf-world-fill)" stroke="#7a958c" stroke-width="2.5"/>
+        <g data-kf-new-papers></g>
+        <rect x="206" y="18" width="470" height="51" rx="25" fill="#f6f5ef"/>
+        <text x="440" y="53" text-anchor="middle" class="kf-svg-heading">社会整体的研究集合</text>
+        <text x="868" y="94" text-anchor="middle" class="kf-svg-small">尚待回答的问题</text>
+        <path d="M691 111L749 87L778 87" fill="none" stroke="#9aa09a" stroke-width="1.5" stroke-dasharray="4 5"/>
+        <circle data-kf-system cx="420" cy="320" r="128" fill="#f6f5ef" fill-opacity=".9" stroke="#142e2b" stroke-width="3"/>
+        <g data-kf-edges></g><g data-kf-nodes></g>
+        <text x="420" y="215" text-anchor="middle" class="kf-svg-heading" style="font-size:35px">PaperDaily</text>
+        <text x="420" y="246" text-anchor="middle" class="kf-svg-small">纳入 · 分类 · 链接 · 图谱</text>
+        <text x="420" y="536" text-anchor="middle" class="kf-svg-small">让系统覆盖与理解，持续贴近研究现状</text>
+        <g data-kf-delivery>
+          <path d="M606 356C664 327 701 367 731 384" fill="none" stroke="#b36542" stroke-width="3" marker-end="url(#kf-arrow)"/>
+          <rect x="609" y="296" width="171" height="39" rx="19" fill="#f6f5ef"/>
+          <text x="694" y="323" text-anchor="middle" class="kf-svg-small" style="fill:#b36542">日报 · 你的 Agent</text>
+          <text x="665" y="485" text-anchor="middle" class="kf-svg-small">阅读 · 比较 · 讨论</text>
+          <g data-kf-person-papers></g>
+        </g>
+        <circle data-kf-person-halo cx="831" cy="390" r="70" fill="none" stroke="#d9a487" stroke-dasharray="4 7"/>
+        <circle data-kf-person cx="831" cy="390" r="58" fill="#f3e3d8" stroke="#b36542" stroke-width="3"/>
+        <g data-kf-insights></g>
+        <text x="831" y="406" text-anchor="middle" class="kf-svg-heading" style="font-size:48px">你</text>
+        <text x="831" y="536" text-anchor="middle" class="kf-svg-heading" style="font-size:29px">个人认知圈</text>
+        <text x="831" y="568" text-anchor="middle" class="kf-svg-small">读懂，并形成自己的判断</text>
+      </svg>
+    </div>
+    <div class="kf-side">
+      <div class="kf-controls"><span class="kf-badge">概念动态示意</span><button type="button" data-kf-toggle aria-pressed="false">播放演示</button><button type="button" data-kf-replay>重新演示</button></div>
+      <ol class="kf-steps">
+        <li data-kf-step="0"><span>01</span><div><h3>研究集合持续扩展</h3><p>每天的新论文拓展已有研究，也带来新的问题。</p></div></li>
+        <li data-kf-step="1"><span>02</span><div><h3>PaperDaily 纳入并组织</h3><p>分类、链接、形成图谱，让散落的论文成为可检索的研究线索。</p></div></li>
+        <li data-kf-step="2"><span>03</span><div><h3>线索接回个人问题</h3><p>日报与自己的 Agent，把新材料接到已有兴趣、证据与待核事项。</p></div></li>
+        <li data-kf-step="3"><span>04</span><div><h3>个人认知圈向外扩展</h3><p>借助 RiD 和原文阅读，通过比较与讨论形成理解，再留下下一轮任务。</p></div></li>
+      </ol>
+      <div class="kf-status" data-kf-status role="status" aria-live="polite">新论文出现，研究集合开始扩展。</div>
+    </div>
+  </div>
+  <p class="kf-disclaimer">圈的大小、位置和速度仅作概念示意，不代表真实比例或严格集合包含关系；收到论文不等于已经理解。</p>
+
 </section>
 
 <section class="slide" data-stage="0">
@@ -986,7 +1060,7 @@ body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom
     <div style="display:grid;place-items:center;width:70px;font-size:44px;color:var(--copper)">→</div>
     <div class="card" style="flex:1"><span class="tag">第三轮复用</span><p style="margin-top:14px;font-size:22px">日报深析直接读入这份核验记录，不再重做</p></div>
   </div>
-  <p class="lead" style="margin-top:44px">这就是“研究记忆”最直观的样子：<b>每一轮留下文件，下一轮从文件开始。</b>上半场第24页的修订，就是 Agent 在这一轮完成的。</p>
+  <p class="lead" style="margin-top:44px">这就是“研究记忆”最直观的样子：<b>每一轮留下文件，下一轮从文件开始。</b>上半场第25页的修订，就是 Agent 在这一轮完成的。</p>
   
 </section>
 
@@ -1007,7 +1081,7 @@ body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom
   <div class="kicker"><span class="case">贯穿案例</span>它交回了什么</div>
   <h2 class="title">日报深析的四类研究产出</h2>
   <div class="g2" style="margin-top:20px;gap:24px 36px">
-    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>比较矩阵</span></div><img src="assets/14-workbuddy-matrix-full.jpg" style="height:196px" alt="操作截图：14-workbuddy-matrix-full"></div><p class="cap" style="margin-top:10px">四篇：两篇测机器、两篇测人——比较断点（第21页）</p></div>
+    <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>比较矩阵</span></div><img src="assets/14-workbuddy-matrix-full.jpg" style="height:196px" alt="操作截图：14-workbuddy-matrix-full"></div><p class="cap" style="margin-top:10px">四篇：两篇测机器、两篇测人——比较断点（第22页）</p></div>
     <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>机制与候选问题</span></div><img src="assets/13-workbuddy-report-full.jpg" style="height:196px" alt="操作截图：13-workbuddy-report-full"></div><p class="cap" style="margin-top:10px">从“给建议”到“替你执行”，员工学习的条件会改变吗？</p></div>
     <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>RiD 阅读卡</span></div><img src="assets/15-workbuddy-rid-reading-cards.jpg" style="height:196px" alt="操作截图：15-workbuddy-rid-reading-cards"></div><p class="cap" style="margin-top:10px">两张卡：读哪里、核对什么、留下哪些证据</p></div>
     <div><div class="shot"><div class="bar"><i></i><i></i><i></i><span>来源台账与执行记录</span></div><img src="assets/17-workbuddy-mcp-receipt.jpg" style="height:196px;object-fit:contain;background:#fff" alt="操作截图：17-workbuddy-mcp-receipt"></div><p class="cap" style="margin-top:10px">每条材料从哪来、读到多深、哪些没做</p></div>
@@ -1237,6 +1311,74 @@ body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom
     s.append(f);
   });
 
+  // One illustrative sequence, owned by this slide only; no data, network or storage access.
+  const knowledgeFlow = (() => {
+    const root = document.querySelector('[data-knowledge-flow]');
+    if (!root) return { sync() {} };
+    const slide = root.closest('.slide');
+    const ns = 'http://www.w3.org/2000/svg';
+    const find = name => root.querySelector(`[data-kf-${name}]`);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const steps = [...root.querySelectorAll('[data-kf-step]')];
+    const toggle = find('toggle'), replay = find('replay'), status = find('status');
+    const messages = ['新论文出现，研究集合开始扩展。','系统纳入材料，并把论文组织成可以连接的图谱。','日报与 Agent 把线索接回当前研究问题。','通过阅读、比较与讨论，认知圈逐步向外扩展。'];
+    const create = (tag, attrs, parent) => { const e = document.createElementNS(ns, tag); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); parent.append(e); return e; };
+    const colors = ['#23463f','#7a958c','#b36542','#9b795e'];
+    const nodes = Array.from({length:24}, (_,i) => ({x:326+(i%6)*37+Math.sin(i*2.1)*6,y:287+Math.floor(i/6)*43+Math.cos(i*1.7)*6,el:null}));
+    const edges = [];
+    nodes.forEach((p,i) => {
+      if(i) edges.push({at:i,el:create('line',{x1:nodes[Math.max(0,i-(i%6?1:6))].x,y1:nodes[Math.max(0,i-(i%6?1:6))].y,x2:p.x,y2:p.y,stroke:colors[Math.floor(i/6)%4],'stroke-width':1.8},find('edges'))});
+      if(i>6&&i%3===0) edges.push({at:i,el:create('line',{x1:nodes[i-5].x,y1:nodes[i-5].y,x2:p.x,y2:p.y,stroke:'#9aa99f','stroke-width':1.4},find('edges'))});
+    });
+    nodes.forEach((p,i)=>p.el=create('circle',{cx:p.x,cy:p.y,r:5.4,fill:colors[Math.floor(i/6)%4],stroke:'#f6f5ef','stroke-width':1.2},find('nodes')));
+    const papers = Array.from({length:12},(_,i)=>{
+      const g=create('g',{},find('new-papers'));
+      create('rect',{x:-8,y:-10,width:16,height:21,rx:2,fill:'#f6f5ef',stroke:colors[i%4],'stroke-width':1.5},g);
+      create('path',{d:'M-4 -3H4M-4 2H4M-4 7H1',fill:'none',stroke:colors[i%4],'stroke-width':1.2},g);return g;
+    });
+    const delivered = Array.from({length:3},()=>{
+      const g=create('g',{},find('person-papers'));create('rect',{x:-6,y:-8,width:12,height:16,rx:2,fill:'#f6f5ef',stroke:'#b36542','stroke-width':1.5},g);return g;
+    });
+    const insights = Array.from({length:16},(_,i)=>create('circle',{r:3.6,fill:colors[i%4]},find('insights')));
+    const clamp = x=>Math.max(0,Math.min(1,x));
+    const ease = (t,a,b)=>{const x=clamp((t-a)/(b-a));return x*x*(3-2*x);};
+    const TOTAL=32; let elapsed=0,running=false,frame=0,last=0,active=false,phase=-1;
+    function draw(t) {
+      const world=235+50*ease(t,0,TOTAL),system=128+58*ease(t,3,19),personal=58+45*ease(t,18,TOTAL);
+      find('world').setAttribute('r',world);find('world-halo').setAttribute('r',world+11);
+      find('system').setAttribute('r',system);find('person').setAttribute('r',personal);find('person-halo').setAttribute('r',personal+12);
+      const n=6+18*ease(t,4,19);
+      nodes.forEach((p,i)=>p.el.setAttribute('opacity',i<n?.9:.12));edges.forEach(e=>e.el.setAttribute('opacity',e.at<n?.55:.045));
+      papers.forEach((g,i)=>{
+        const angle=-2.85+i*.45,progress=(t*.105+i*.113)%1;
+        const move=ease(t,2,6);const p=progress*move;
+        const target=nodes[(i*7)%24];const sx=440+(world+5)*Math.cos(angle),sy=300+(world+5)*Math.sin(angle);
+        const x=sx+(target.x-sx)*p,y=sy+(target.y-sy)*p;
+        g.setAttribute('transform',`translate(${x} ${y}) rotate(${Math.sin(i)*9})`);
+        g.setAttribute('opacity',(.8*(1-.75*p)).toFixed(3));
+      });
+      const delivery=ease(t,13,18);find('delivery').setAttribute('opacity',delivery);
+      delivered.forEach((g,i)=>{const p=(t*.22+i/3)%1;g.setAttribute('transform',`translate(${615+p*125} ${357+30*p-17*Math.sin(p*Math.PI)})`);g.setAttribute('opacity',delivery*Math.sin(p*Math.PI));});
+      insights.forEach((e,i)=>{const a=i*Math.PI*2/16,rad=personal*.72;e.setAttribute('cx',831+Math.cos(a)*rad);e.setAttribute('cy',390+Math.sin(a)*rad);e.setAttribute('opacity',i<3+13*ease(t,20,TOTAL)?.8:.08);});
+      const next=t<7?0:t<14?1:t<22?2:3;
+      if(next!==phase){phase=next;steps.forEach((e,i)=>{e.classList.toggle('is-current',i===phase);e.classList.toggle('is-reached',i<phase);});status.textContent=messages[phase];}
+      root.dataset.phase=String(phase);root.dataset.playing=String(running);
+    }
+    function label(){toggle.textContent=running?'暂停演示':elapsed>=TOTAL?'再演示一次':elapsed?'继续演示':'播放演示';toggle.setAttribute('aria-pressed',String(running));root.dataset.playing=String(running);}
+    function stop(){running=false;cancelAnimationFrame(frame);last=0;label();}
+    function tick(now){if(!running)return;if(last)elapsed=Math.min(TOTAL,elapsed+(now-last)/1000);last=now;draw(elapsed);if(elapsed>=TOTAL){stop();return;}frame=requestAnimationFrame(tick);}
+    function play(){if(elapsed>=TOTAL)elapsed=0;running=true;last=0;label();frame=requestAnimationFrame(tick);}
+    toggle.addEventListener('click',e=>{e.stopPropagation();running?stop():play();});
+    replay.addEventListener('click',e=>{e.stopPropagation();stop();elapsed=0;phase=-1;draw(0);play();});
+    [toggle,replay].forEach(b=>b.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter')e.stopPropagation();}));
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
+    let resumeAfterPrint=false;
+    window.addEventListener('beforeprint',()=>{resumeAfterPrint=running;stop();draw(TOTAL);});
+    window.addEventListener('afterprint',()=>{draw(elapsed);if(resumeAfterPrint&&active)play();});
+    draw(reduced?TOTAL:0);
+    return {sync(current){const entering=current===slide;if(entering&&!active){stop();elapsed=reduced?TOTAL:0;phase=-1;draw(elapsed);if(!reduced)play();}else if(!entering&&active)stop();active=entering;}};
+  })();
+
   const notesOf = i => (slides[i].querySelector('.notes')?.textContent || '').trim();
   const titleOf = i => (slides[i].querySelector('h1,h2')?.textContent || '').replace(/\s+/g, ' ').trim();
 
@@ -1247,6 +1389,7 @@ body.presenter #pbottom{display:block;position:fixed;left:24px;right:36vw;bottom
   function go(i, broadcast = true) {
     cur = Math.max(0, Math.min(N - 1, i));
     slides.forEach((s, k) => s.classList.toggle('active', k === cur));
+    knowledgeFlow.sync(slides[cur]);
     history.replaceState(null, '', location.pathname + location.search + '#' + (cur + 1));
     document.getElementById('drawer').textContent = `${cur + 1}. ${titleOf(cur)}\n\n${notesOf(cur)}`;
     if (presenter) {

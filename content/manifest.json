@@ -1,5 +1,5 @@
 {
-  "source_sha": "bb30cebbf7350e6978bcf8518057f900b299b0d2",
+  "source_sha": "492350de9bfbac714e7098b1557861e177a71122",
   "source_repository": "alonegg/paperdaily-research-workshop",
   "files": {
     "poster/assets/PaperDaily-workshop-poster-html.zip": "442284c37a9fbfa82c655c5c02339509d14ce7144d0bc20b6e08fe0eb9268755",
@@ -14,8 +14,8 @@
     "video/output/poster.png": "a39f6b3222dee7c45a623849ba159fa2a4b8397a79e8383cfa6574f76203fe61",
     "video/output/workshop.srt": "d189bf587a8528770da87a0aa4ad215b446cf500c37dd0fdbd4eed2d1ea0ea15",
     "video/output/workshop.vtt": "891b28af4c94442aa81954940d6241c41f06e3815af003e406de3c0c29b4e5de",
-    "workshop/Skills研究入门与工作流程.md": "90127c65643fca709852768b8bed79d20c302805423e3d23d8cba05e030db26d",
-    "workshop/WorkBuddy安装说明.md": "aeea7987bcec7551f3fea4b31108f6b6b746bfab131b1d044b72db982b983612",
+    "workshop/Skills研究入门与工作流程.md": "ff11eb5bab97c6a55915831fbf418f7d14b46cf327e4afed3c9820680129d7f8",
+    "workshop/WorkBuddy安装说明.md": "599ad26966b56c092302f1424ab6c86141806d64aac6cf0cee36abd2b3f203ba",
     "workshop/assets/01-daily-overview.jpg": "2a76d9fcdeda1ce77a454d46216ecc5bf6913fb9081c16eb9f79d27afde4c695",
     "workshop/assets/04-ask-broad-question.jpg": "f2289589e06e98e8cd701d3c3b6e19f151df13b8b810209a717ebef23a387f85",
     "workshop/assets/05-workbench-matrix.jpg": "29a01cd4065db9dd42eb028f0bc99edb9e8f50a39377bab2c25f1b2289902161",
@@ -47,9 +47,9 @@
     "workshop/handouts/manifest.json": "53a4fec53f3a295d5b53cd01d70971ab3c1a0656ba11b1f8e7e5bbbf2ec7ea84",
     "workshop/handouts/paperdaily-deep-research.zip": "f10a5d8fbf924b757223e2f2de5e3aa1bed5eafb10a51d1dee5095b103d8a48c",
     "workshop/handouts/paperdaily.zip": "41befc18aa6ce4fc926cfc9149a89bdf160f27dcb55aa6d3b8c869c3782f69c8",
-    "workshop/index.html": "2d66d260486d1a351d5722060c45bd258ececf81264dffb0ba090add0b318f39",
-    "workshop/三类缺口与科研外脑.md": "1bde578b5af4eb61eb3b4515b8365e9381d49ed94e785fae8db0f62875249214",
-    "workshop/授权网页与原文获取.md": "8d88d7bb87b28b9564ba580897cfb45bebac04d3f78ec4d8f49aeffaf65177b6",
+    "workshop/index.html": "22d89fd9ca775083d288897f9702d4d49d6a53947a7d65dcaa2d5cfe8aa1847d",
+    "workshop/三类缺口与科研外脑.md": "6275dd54299ed1be80bd7ba27fc9af5bbfa2bc2a79f734c0157efab77bc614cf",
+    "workshop/授权网页与原文获取.md": "7afd4e4176b171fe70a48adc15f394d97c075e11b9fe518480f056218c5a72c4",
     "workshop/数据口径与来源.md": "a6d40ce72e358c77f44114158d5480c44e0d4b899ab3381d450d6df612c27ffa",
     "workshop/数据来源与领域期刊.md": "dbc3450b6119618a3e8f1c62c447a6fe0ac2218205c0a0908f4eb23322fce3b7",
     "workshop/日报如何筛选.md": "c516a22f60a152c69738eddd1ea9a6cdc05f53baa85401e24739aede4c21222a"
