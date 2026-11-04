@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import zipfile
 
-DOCS=['WorkBuddy安装说明.md','授权网页与原文获取.md','Skills研究入门与IS思想.md','三类缺口与科研外脑.md','数据来源与领域期刊.md','数据口径与来源.md','日报如何筛选.md']
+DOCS=['WorkBuddy安装说明.md','授权网页与原文获取.md','Skills研究入门与工作流程.md','三类缺口与科研外脑.md','数据来源与领域期刊.md','数据口径与来源.md','日报如何筛选.md']
 PATTERNS=[r'gh[pousr]_[A-Za-z0-9]{30,}',r'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----',r'wbSeedToken=[A-Za-z0-9_-]{12,}',r'(?i)Bearer\s+[A-Za-z0-9._-]{30,}']
 def check_text(text):
     if any(re.search(p,text) for p in PATTERNS):raise ValueError('Potential credential: export refused')
